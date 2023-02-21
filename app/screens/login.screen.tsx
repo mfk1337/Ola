@@ -26,9 +26,22 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     GoogleSignin.configure();
 
     // Check if your device supports Google Play
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
+    .catch(error => {
+      setLoading(false)
+      console.log(error);
+    });
     // Get the users ID token
-    const { idToken } = await GoogleSignin.signIn();
+    var idToken = ''
+    await GoogleSignin.signIn()
+    .then((userInfo) => {
+      console.log("idToken: "+ userInfo.idToken)
+      idToken = userInfo.idToken as string
+    })
+    .catch(error => {
+      setLoading(false)
+      console.log(error);
+    });
 
     // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
