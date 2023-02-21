@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import { formInputValidation } from "../libs/form-validation";
 import { Loading } from "../components/loading-overlay";
 
-import { GoogleSignin } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
 import { GOOGLESIGNIN_IOS_CLIENTID,GOOGLESIGNIN_ANDROID_CLIENTID } from '../constants'; // Import Google sign in IOS CLIENT ID
 
 
@@ -21,9 +21,9 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
   const handleSignInWithGoogle = async () => {
 
-    GoogleSignin.configure({
-        iosClientId: GOOGLESIGNIN_IOS_CLIENTID,
-    });
+    setLoading(true)
+
+    GoogleSignin.configure();
 
     // Check if your device supports Google Play
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -34,7 +34,44 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
     // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
+    auth()
+    .signInWithCredential(googleCredential)
+    .then(() => {
+        console.log('User account signed in!');
+        setLoading(false)
+        navigation.navigate('Rooms')
+    })
+    .catch(error => {
+
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        setLoading(false)
+        Alert.alert("SIGN_IN_CANCELLED");
+      }
+
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert("The email address is already in use!");
+      }
+
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert("The email address is already in use!");
+      }
+
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert("The email address is invalid!");
+      }
+
+      if (error.code === 'auth/invalid-credential') {
+        Alert.alert("The supplied auth credential is malformed or has expired.");
+      }
+
+      if (error.code === 'auth/too-many-requests') {
+        Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+      }
+
+      setLoading(false)
+
+      console.log(error);
+    });
 
   }
   
@@ -129,13 +166,19 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
             />
           <BasicButton title="Login" onPress={handleSignIn} />
 
-          <BasicButton title="Login with Google" style={{marginTop:25}} onPress={handleSignInWithGoogle}/>
-          <BasicButton title="Login with Facebook"/>
+          <View style={{alignItems:"center"}}>
+            <GoogleSigninButton
+              style={{ width: 192, height: 48, marginTop:15}}
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Light}
+              onPress={handleSignInWithGoogle}
+              disabled={loading}
+            />
+          </View>
 
         </View>
         { loading ? (<Loading />):(null)}
     </SafeAreaView>
-
     
   )
 
