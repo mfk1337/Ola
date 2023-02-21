@@ -9,8 +9,8 @@ export const LoginScreen = () => {
     return(
         <SafeAreaView style={sharedStyles.container}>
                    
-          <View style={{marginHorizontal: 60, marginTop: 60, }}>
-            <Image source={require('../assets/img/app_logo.png')} style={{width:200, height:200, alignSelf: 'center'}}/>
+          <View style={{marginHorizontal: 60, marginTop: 90, }}>
+            <Image source={require('../assets/img/app_logo.png')} style={{width:170, height:170, alignSelf: 'center'}}/>
             <TextInput
                     style={sharedStyles.textInput}
                     placeholder="E-mail"
