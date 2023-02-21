@@ -11,7 +11,7 @@ export const sharedStyles = StyleSheet.create({
         borderColor: Colors.white,
         padding: 12,
         borderRadius: 10,
-        marginTop: 16,
+        marginTop: 10,
         fontSize: 18,
         backgroundColor: Colors.white
     },

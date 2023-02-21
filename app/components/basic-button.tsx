@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Colors } from "../assets/styles/colors";
 
 interface BasicButtonProps {
@@ -7,20 +7,23 @@ interface BasicButtonProps {
     title: string;
     color?: string;
     disabled?: boolean;
+    loader?: boolean;
     onPress?: () => void;
 }
 
 
 export const BasicButton: React.FC<BasicButtonProps> = props => {
-    const { style, title, color, disabled, onPress } = props;
+    const { style, title, color, disabled, loader,  onPress } = props;
     return (
         <View
-            style={styles.buttonContainer}>
-            <TouchableOpacity
+            style={[styles.buttonContainer, style]}>            
+            {loader ? (<ActivityIndicator size="small" color={Colors.white} style={{height:22}} />):(
+                <TouchableOpacity
                 disabled={disabled}
                 onPress={onPress}>
-                <Text style={styles.buttonTitle}>{title}</Text>
-            </TouchableOpacity>
+                    <Text style={styles.buttonTitle}>{title}</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
@@ -31,7 +34,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.darkGrey,
         padding: 12,
         borderRadius: 10,
-        marginTop: 16,
+        marginTop: 10,
         backgroundColor: Colors.black,
         
     },
