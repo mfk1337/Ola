@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "627663599334",
+    "project_id": "project-ola-c65be",
+    "storage_bucket": "project-ola-c65be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627663599334:android:67cc6ef9fb88af0e55ed27",
+        "android_client_info": {
+          "package_name": "com.ola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627663599334-l2m77tbhh1p67j8d71p5ihpqk3fbeba0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwbohv9AAFyb5kzBmNDmXckO79uVbVdLI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627663599334-4c5f320rmrocb6tflf8t1rc96r2oudj0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "627663599334-ue4oo3bm59dnkaekdkgs1tt0qp0bvkj8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dk.fayyaz.Ola",
+                "app_store_id": "13371337"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

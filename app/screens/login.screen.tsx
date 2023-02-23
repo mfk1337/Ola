@@ -8,8 +8,6 @@ import { formInputValidation } from "../libs/form-validation";
 import { Loading } from "../components/loading-overlay";
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
-import { GOOGLESIGNIN_IOS_CLIENTID,GOOGLESIGNIN_ANDROID_CLIENTID } from '../constants'; // Import Google sign in IOS CLIENT ID
-
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
@@ -29,6 +27,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
     .catch(error => {
       setLoading(false)
+      console.log('1');
       console.log(error);
     });
     // Get the users ID token
@@ -40,9 +39,12 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     })
     .catch(error => {
       setLoading(false)
+      console.log('2');
       console.log(error);
+      return;
     });
 
+    console.log('3');
     // Create a Google credential with the token
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
