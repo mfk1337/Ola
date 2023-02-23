@@ -21,7 +21,9 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
     setLoading(true)
 
-    GoogleSignin.configure();
+    await GoogleSignin.configure({
+      webClientId: '627663599334-l2m77tbhh1p67j8d71p5ihpqk3fbeba0.apps.googleusercontent.com',
+    });
 
     // Check if your device supports Google Play
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
@@ -35,6 +37,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     await GoogleSignin.signIn()
     .then((userInfo) => {
       console.log("idToken: "+ userInfo.idToken)
+      console.log({userInfo})
       idToken = userInfo.idToken as string
     })
     .catch(error => {

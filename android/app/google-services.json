@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "627663599334-gqfr6fk65iotkqg7i6cklsgb9df9ma9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ola",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "627663599334-l2m77tbhh1p67j8d71p5ihpqk3fbeba0.apps.googleusercontent.com",
           "client_type": 3
         }
