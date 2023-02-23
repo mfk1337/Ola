@@ -8,7 +8,6 @@ import { Loading } from "../components/loading-overlay";
 import { BasicList } from "../components/basic-list";
 import { BasicListItem } from "../components/items/basic-list-item";
 import { Colors } from "../assets/styles/colors";
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 export const RoomsScreen = () => {
@@ -50,7 +49,7 @@ export const RoomsScreen = () => {
                 .signOut()
                 .then(() => console.log('User signed out!'));
             }} />
-            <Icon size={24} color="white" name="movie" />
+
 
         { loading ? (<Loading />):(null)}
         </SafeAreaView>

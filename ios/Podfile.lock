@@ -1181,8 +1181,6 @@ PODS:
   - RNScreens (3.20.0):
     - React-Core
     - React-RCTImage
-  - RNVectorIcons (9.2.0):
-    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1230,7 +1228,6 @@ DEPENDENCIES:
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1347,8 +1344,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-google-signin/google-signin"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNVectorIcons:
-    :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1421,7 +1416,6 @@ SPEC CHECKSUMS:
   RNFBFirestore: 7104b52d71b367e4c18f61dc983b54e305d5d5ef
   RNGoogleSignin: 22e468a9474dbcb8618d8847205ad4f0b2575d13
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
-  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   Yoga: 5ed1699acbba8863755998a4245daa200ff3817b
 
 PODFILE CHECKSUM: 9def72405b5810eb540ec75b4f88730b59a2c6d0

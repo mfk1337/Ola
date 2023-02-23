@@ -13,7 +13,7 @@ export const BasicList: React.FC<BasicListProps> = props => {
 
     return <FlatList style={[style]}
     data={data}
-    ItemSeparatorComponent={() => <View style={{height: 1}} />}
+    ItemSeparatorComponent={() => <View style={{height: 3}} />}
     renderItem={renderItem}/>  
 
 }
