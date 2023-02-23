@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1E83280F2E8AD00589CD1030 /* Pods_Ola.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D07B2DC3FA3446BE49EF7AC /* Pods_Ola.framework */; };
 		5E72FB5529A3987B00FA1EC7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E72FB5429A3987A00FA1EC7 /* GoogleService-Info.plist */; };
+		70DF81E9C1B74323BB13D8B5 /* RobotoMono.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2C63485010234EABBAD6AD85 /* RobotoMono.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		DC5B1E37A2F3550BFBF7996B /* Pods_Ola_OlaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1C6A37C99A938AC08256F22 /* Pods_Ola_OlaTests.framework */; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Ola/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Ola/main.m; sourceTree = "<group>"; };
 		1D07B2DC3FA3446BE49EF7AC /* Pods_Ola.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ola.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C63485010234EABBAD6AD85 /* RobotoMono.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = RobotoMono.ttf; path = ../app/assets/fonts/RobotoMono.ttf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Ola.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ola.debug.xcconfig"; path = "Target Support Files/Pods-Ola/Pods-Ola.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Ola.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ola.release.xcconfig"; path = "Target Support Files/Pods-Ola/Pods-Ola.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Ola-OlaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ola-OlaTests.debug.xcconfig"; path = "Target Support Files/Pods-Ola-OlaTests/Pods-Ola-OlaTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				F34D1B20A7C742CAB2C5574F /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -149,6 +152,15 @@
 				89C6BE57DB24E9ADA2F236DE /* Pods-Ola-OlaTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		F34D1B20A7C742CAB2C5574F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2C63485010234EABBAD6AD85 /* RobotoMono.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +262,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				5E72FB5529A3987B00FA1EC7 /* GoogleService-Info.plist in Resources */,
+				70DF81E9C1B74323BB13D8B5 /* RobotoMono.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
