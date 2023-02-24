@@ -27,6 +27,7 @@ const App = () => {
   // Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
   setLoggedInUser(loggedInUser);
+  
     if (initializing) setInitializing(false);
   }
 
@@ -36,6 +37,14 @@ const App = () => {
   }, []);
 
   if (initializing) return null;
+
+  console.log(loggedInUser)
+
+  /**
+   * mfk: hJr4w8043aRo08DFceOr5ApEaNR2
+   * bear: 2sHbgIZRSIQJlot6kiWQRVIxqsS2
+   * 
+   */
 
   return(
     <NavigationContainer>
@@ -48,8 +57,8 @@ const App = () => {
           ):(
             // User is logged in, show app content
             <Stack.Navigator >
-              <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms' }}/>
-              <Stack.Screen name="SingleRoom" component={SingleRoomScreen} options={{ title: 'Chat room' }}/>
+              <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms',headerShown: false }}/>
+              <Stack.Screen name="SingleRoom" component={SingleRoomScreen} options={{ title: 'Chat room',headerShown: false }}/>
             </Stack.Navigator>
           )
         }                

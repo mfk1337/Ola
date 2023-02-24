@@ -1,5 +1,6 @@
 import { StyleSheet, Platform } from 'react-native';
 import { Colors } from './colors';
+import { fontStyles } from './fonts';
 
 export const sharedStyles = StyleSheet.create({
     container: {
@@ -12,9 +13,16 @@ export const sharedStyles = StyleSheet.create({
         padding: 12,
         borderRadius: 10,
         marginTop: 10,
-        fontSize: 18,
+        fontSize: 17,
         backgroundColor: Colors.white
     },
     
+    errorMsgGrey: {
+        textAlign: 'center',
+        fontSize: 13,
+        color: Colors.medGrey,
+        ...fontStyles.fontRoboto
+
+    }
     
 });

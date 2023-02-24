@@ -38,10 +38,16 @@ export const RoomsScreen = ({navigation}: {navigation: any}) => {
 
     return(
         <SafeAreaView style={[sharedStyles.container]}>
-            <Header title='Chat rooms' style={{textAlign: 'center'}}/>       
+            <Header title='Chat rooms' style={{textAlign: 'center',  marginBottom: 10}}/>       
 
             <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{
-              navigation.navigate('SingleRoom')
+                            
+              navigation.navigate('SingleRoom', {
+                roomName: item.name,
+                roomDesc: item.desc,
+                roomId: item.key
+              });
+
             }} />}
             onRefresh={() => {
               console.log("Refreshing list...")

@@ -10,6 +10,14 @@ interface HeaderProps {
     size?: string;
 }
 
+interface SubHeaderProps {
+    style?: StyleProp<any>;
+    text: string;
+    color?: string;
+    size?: string;
+}
+
+
 export const Header: React.FC<HeaderProps> = props => {
 
     const { style, title, color, size } = props;
@@ -18,13 +26,30 @@ export const Header: React.FC<HeaderProps> = props => {
 
 }
 
+export const SubHeader: React.FC<SubHeaderProps> = props => {
+
+    const { style, text, color, size } = props;
+
+    return <Text style={[style, styles.subHeader]}>{text}</Text>
+
+}
+
 // Local stylesheet for this screen
 const styles = StyleSheet.create({
     bigHeader: {
-        fontSize:23,
+        fontSize:21,
         ...fontStyles.fontRoboto,
         color: Colors.black,
-        marginBottom: 10,
+        paddingLeft:10,
+        paddingRight:10,
+    },
+
+    subHeader: {
+        fontSize:11,
+        ...fontStyles.fontRoboto,
+        color: Colors.black,
+        paddingLeft:10,
+        paddingRight:10,
     },
    
 });
