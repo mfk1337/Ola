@@ -65,7 +65,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             <SubHeader text={roomDesc} style={{textAlign: 'center', marginBottom: 10}}/>              
         
             { msgs.length ? (                             
-                <BasicList style={styles.basicListStyle} data={[...msgs].reverse()} inverted={true} renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
+                <BasicList 
+                style={styles.basicListStyle}
+                data={[...msgs].reverse()}
+                inverted={true}
+                renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
             ):(
                 <View style={styles.basicListStyle}>
                     <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>
