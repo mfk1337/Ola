@@ -19,7 +19,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
             <View style={{alignItems:currentUser ? 'flex-end': 'flex-start'}}>
             <TouchableHighlight onPress={onPress}>
                 {currentUser ? (
-                    <View style={{flexDirection: 'row', backgroundColor: Colors.green, marginLeft:10, marginRight:10, marginTop:10, borderRadius:15, width: '70%'}}>                              
+                    <View style={{flexDirection: 'row', backgroundColor: Colors.green, marginLeft:10, marginRight:10, marginBottom:5, borderRadius:15, width: '70%'}}>                              
                             <Text style={{padding: 10,
                                 textAlign:'left',
                                 color: Colors.black,
@@ -27,7 +27,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                                 margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>                       
                     </View>  
                   ):(   
-                    <View style={{flexDirection: 'row', backgroundColor: Colors.lightGrey, marginLeft:10, marginRight:10, marginTop:10, borderRadius:15, width: '70%'}}>                              
+                    <View style={{flexDirection: 'row', backgroundColor: Colors.lightGrey, marginLeft:10, marginRight:10, marginBottom:5, borderRadius:15, width: '70%'}}>                              
                         <Text style={{padding: 10,
                             textAlign:'left',
                             color: Colors.black,

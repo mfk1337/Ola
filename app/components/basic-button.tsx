@@ -1,6 +1,7 @@
 import React from "react";
 import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Colors } from "../assets/styles/colors";
+import { fontStyles } from "../assets/styles/fonts";
 
 interface BasicButtonProps {
     style?: StyleProp<ViewStyle>;
@@ -42,5 +43,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         color: Colors.white,
+        ...fontStyles.fontRoboto
     },
 });
