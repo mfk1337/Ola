@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen'
 
-import { LoginScreen, RoomsScreen } from './screens';
+import { LoginScreen, RoomsScreen, SingleRoomScreen } from './screens';
 
 import auth from '@react-native-firebase/auth';
 
@@ -39,17 +39,20 @@ const App = () => {
 
   return(
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
         {
           !loggedInUser ? (
             // User is not logged in, show login screen
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Login" component={LoginScreen} />
+            </Stack.Navigator>
           ):(
             // User is logged in, show app content
-            <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms' }}/>
+            <Stack.Navigator >
+              <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms' }}/>
+              <Stack.Screen name="SingleRoom" component={SingleRoomScreen} options={{ title: 'Chat room' }}/>
+            </Stack.Navigator>
           )
         }                
-      </Stack.Navigator>
     </NavigationContainer>
   )
 
