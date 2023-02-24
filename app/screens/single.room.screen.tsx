@@ -45,6 +45,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     const handleSendChatMsg = () => {
         console.log({chatMsg})
 
+        if(!chatMsg) return
+
         firestore()
         .collection('chatmessages')
         .add({
