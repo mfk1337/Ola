@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { Header, SubHeader } from "../components/headers";
 import { Loading } from "../components/loading-overlay";
@@ -65,7 +65,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         <SafeAreaView style={[sharedStyles.container]}>
             <Header title={roomName} style={{textAlign: 'center'}}/>       
             <SubHeader text={roomDesc} style={{textAlign: 'center', marginBottom: 10}}/>              
-        
+
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1}}>
+
             { msgs.length ? (                             
                 <BasicList 
                 style={styles.basicListStyle}
@@ -90,7 +94,9 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     onChangeText={text => setChatMsg(text)}
                     />
                 <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, padding:5}} onPress={handleSendChatMsg} />
-            </View>    
+            </View> 
+
+            </KeyboardAvoidingView>   
 
             <Button title="Back to overview" onPress={()=>{
                 navigation.popToTop()

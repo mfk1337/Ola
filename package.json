@@ -18,6 +18,7 @@
     "@react-native-google-signin/google-signin": "^9.0.2",
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",
+    "ios-deploy": "^1.12.1",
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-native": "0.71.3",
