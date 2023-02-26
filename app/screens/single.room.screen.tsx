@@ -70,31 +70,32 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{flex: 1}}>
 
-            { msgs.length ? (                             
-                <BasicList 
-                style={styles.basicListStyle}
-                data={[...msgs].reverse()}
-                inverted={true}
-                renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
-            ):(
-                <View style={styles.basicListStyle}>
-                    <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>
-                </View>
-            )}
+                { msgs.length ? (                             
+                    <BasicList 
+                    style={styles.basicListStyle}
+                    data={[...msgs].reverse()}
+                    inverted={true}
+                    renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
+                ):(
+                    <View style={styles.basicListStyle}>
+                        <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>
+                    </View>
+                )}
 
-            <View style={{flexDirection: 'row', padding:5}}>
-                <TextInput 
-                    placeholder='Type message...'
-                    autoCapitalize="none"
-                    returnKeyType="go"
-                    enablesReturnKeyAutomatically={true}
-                    onSubmitEditing={handleSendChatMsg}
-                    style={[sharedStyles.textInput,{flex:1, marginRight:10, marginLeft:10, height:40, padding:5}]}
-                    value={chatMsg}
-                    onChangeText={text => setChatMsg(text)}
-                    />
-                <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, padding:5}} onPress={handleSendChatMsg} />
-            </View> 
+                <View style={{flexDirection: 'row', padding:5, marginBottom:10}}>
+                    <TextInput 
+                        placeholder='Type message...'
+                        placeholderTextColor={Colors.medGrey}
+                        autoCapitalize="none"
+                        returnKeyType="go"
+                        enablesReturnKeyAutomatically={true}
+                        onSubmitEditing={handleSendChatMsg}
+                        style={[sharedStyles.textInput,{flex:1, marginRight:10, marginLeft:10, height:40, padding:5}]}
+                        value={chatMsg}
+                        onChangeText={text => setChatMsg(text)}
+                        />
+                    <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, paddingBottom:1}} onPress={handleSendChatMsg} />
+                </View> 
 
             </KeyboardAvoidingView>   
 

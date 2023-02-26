@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Alert, Image, SafeAreaView, Text, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { BasicButton } from "../components/basic-button";
@@ -8,6 +8,7 @@ import { formInputValidation } from "../libs/form-validation";
 import { Loading } from "../components/loading-overlay";
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
+import { Colors } from "../assets/styles/colors";
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
@@ -15,7 +16,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   const [password, setPassword] = useState('');
 
   const [loading, setLoading] = useState(false);
-  
+  const inputFieldRefPassword = useRef<TextInput | null>(null); // Reference to the Password TextInput
 
   const handleSignInWithGoogle = async () => {
 
@@ -165,10 +166,11 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 enablesReturnKeyAutomatically={true}
                 editable={!loading}
                 onChangeText={text => setEmail(text)}
-                //onSubmitEditing={() => passwordInputRef.current?.focus()}
+                placeholderTextColor={Colors.medGrey}
+                onSubmitEditing={() => inputFieldRefPassword.current?.focus()}
             />
             <TextInput
-                //ref={passwordInputRef}
+                ref={inputFieldRefPassword}
                 style={sharedStyles.textInput}
                 placeholder='Password'
                 value={password}
@@ -180,6 +182,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 enablesReturnKeyAutomatically={true}
                 editable={!loading}
                 onChangeText={text => setPassword(text)}
+                placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={handleSignIn}
             />
           <BasicButton title="Login" onPress={handleSignIn} />

@@ -32,8 +32,10 @@ export const BasicButton: React.FC<BasicButtonProps> = props => {
 const styles = StyleSheet.create({
     buttonContainer: {
         borderWidth: 1,
-        borderColor: Colors.darkGrey,
-        padding: 12,
+        borderColor: Colors.black,
+        alignItems:"center",
+        justifyContent:"center",
+        height: 50,
         borderRadius: 10,
         marginTop: 10,
         backgroundColor: Colors.black,
