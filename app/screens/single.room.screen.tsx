@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Button, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { Header, SubHeader } from "../components/headers";
 import { Loading } from "../components/loading-overlay";
 import firestore from '@react-native-firebase/firestore';
 import { Colors } from "../assets/styles/colors";
 import { BasicList } from "../components/basic-list";
-import { BasicListItem } from "../components/items/basic-list-item";
 import { ChatMsgListItem } from "../components/items/chat-msg-list-item";
 import { BasicButton } from "../components/basic-button";
 
@@ -14,33 +13,94 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     const { roomName, roomDesc, roomId } = route.params;
    
+    const [scrollToEnd, setScrollToEnd] = useState(); 
     const [loading, setLoading] = useState(false); 
     const [msgs, setMsgs] = useState([]); 
     const [chatMsg, setChatMsg] = useState('');
-    
-      useEffect(() => {
+    const [lastMsgPointer, setLastMsgPointer] = useState();
+
+    const chatFlatlistRef = useRef<FlatList | null>(null);
+
+    useEffect(() => {
+                 
+        const onQueryError = (error) => {
+            console.error("onQueryError: "+error);
+        }          
+
         const subscriber = firestore()
         .collection('chatmessages')
-        .orderBy('msg_date', 'asc')
+        .where("chatroom_id","==",roomId)
+        .orderBy('msg_date','desc')
         .limit(50)
-        .where('chatroom_id', '==', roomId)
-          .onSnapshot(querySnapshot => {
-            const msgs = [];
-      
+        .onSnapshot(querySnapshot => {
+            
+            const msgs = [];                       
+
             querySnapshot.forEach(documentSnapshot => {
+                
                 msgs.push({
                 ...documentSnapshot.data(),
                 key: documentSnapshot.id,
-              });
-            });
-            setMsgs(msgs);
-            setLoading(false);
-          });
-          
+                });
+
+            });         
+            
+            setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
+
+            setMsgs(msgs);            
+
+        }, onQueryError);
+
         console.log("Getting new messages...")  
+
         // Unsubscribe from events when no longer in use
         return () => subscriber();
-      }, []);
+    }, []);
+
+    const getMoreMessages = () => {
+
+        if(msgs.length < 50) return
+        console.log("Getting MORE messages...")
+        setLoading(true)
+
+        firestore()
+        .collection('chatmessages')
+        .where("chatroom_id","==",roomId)
+        .orderBy('msg_date','desc')
+        .limit(5)
+        .startAfter(lastMsgPointer)
+        .get()
+        .then(querySnapshot => {
+            
+            const moreMsgs = [];                       
+
+            querySnapshot.forEach(documentSnapshot => {
+                
+                moreMsgs.push({
+                ...documentSnapshot.data(),
+                key: documentSnapshot.id,
+                });
+
+            });         
+            
+            setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
+            
+            setMsgs([...msgs, ...moreMsgs])
+
+            setLoading(false)
+
+            console.log("scrollToEnd1")
+            setScrollToEnd(true)
+
+        });
+    }
+
+    useEffect(() => {        
+        if(!scrollToEnd) return
+        setTimeout(() => {chatFlatlistRef.current?.scrollToEnd({animated:true})  }, 200)
+        console.log("scrollToEnd2")
+        
+    }, [scrollToEnd]);
 
     const handleSendChatMsg = () => {
         console.log({chatMsg})
@@ -59,7 +119,13 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         });
 
         setChatMsg('')
+        setTimeout(() => {chatFlatlistRef.current?.scrollToIndex({
+            animated: true,
+            index: 0,
+          })  }, 200)
     }
+
+    //data={[...msgs].reverse()}
 
     return(
         <SafeAreaView style={[sharedStyles.container]}>
@@ -71,10 +137,12 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                 style={{flex: 1}}>
 
                 { msgs.length ? (                             
-                    <BasicList 
+                    <BasicList
+                    refref={chatFlatlistRef} 
                     style={styles.basicListStyle}
-                    data={[...msgs].reverse()}
+                    data={msgs}
                     inverted={true}
+                    onEndReached={getMoreMessages}
                     renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
                 ):(
                     <View style={styles.basicListStyle}>
