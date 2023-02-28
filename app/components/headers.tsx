@@ -45,11 +45,11 @@ const styles = StyleSheet.create({
     },
 
     subHeader: {
-        fontSize:11,
+        fontSize:13,
         ...fontStyles.fontRoboto,
         color: Colors.black,
-        paddingLeft:10,
-        paddingRight:10,
+        paddingLeft:50,
+        paddingRight:50,
     },
    
 });

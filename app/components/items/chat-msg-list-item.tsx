@@ -17,8 +17,8 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
 
     var msgDateTime = ''
     if(item.msg_date){
-        var lol = new Date(item.msg_date.toDate())
-        msgDateTime = Moment(lol).format("ddd D/M-YY - HH:mm");
+        var msgDate = new Date(item.msg_date.toDate())
+        msgDateTime = Moment(msgDate).format("ddd D/M-YY - HH:mm");
     }else{
         msgDateTime = Moment().format("ddd D/M-YY - HH:mm");
     }
@@ -30,18 +30,29 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                 <View style={{alignItems: 'flex-end'}}>
 
                     <View style={{flexDirection: 'row'}}>
-                    <View style={{backgroundColor: Colors.green, marginLeft:10, marginRight:10, marginBottom:2, borderRadius:15, borderBottomEndRadius:0, maxWidth: '70%',}}>                              
-                            <Text style={{padding: 10,
-                                textAlign:'left',
-                                color: Colors.black,
-                                fontSize: 12,
-                                margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
-                                                    
-                    </View> 
-                    <Image source={require('../../assets/img/default-avatar.jpeg')} style={{height:36, width:36, borderRadius:36,marginRight: 5}}/>   
+                        <View style={{backgroundColor: Colors.green, overflow:'hidden',  marginLeft:10, marginRight:10, marginBottom:2, borderRadius:15, borderBottomEndRadius:0, maxWidth: '70%',}}>                              
+                                
+                                {
+                                    
+                                    item.msg_image_url ? (
+                                        <Image style={{width:'100%', height: undefined, aspectRatio: 1,  resizeMode: 'cover'}} source={{uri: item.msg_image_url}} />
+                                        
+                                    ):(
+                                        <Text style={{padding: 10,
+                                            textAlign:'left',
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                            margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
+                                    )
+                                }
+                                
+                                
+                                                        
+                        </View> 
+                        <Image source={require('../../assets/img/default-avatar.jpeg')} style={{height:36, width:36, borderRadius:36,marginRight: 5}}/>   
                     </View>
 
-                    <Text style={{fontSize:9, color: Colors.medGrey, textAlign: 'right', marginRight: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
+                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginRight: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
                 </View>
             ):(
                 <View style={{alignItems: 'flex-start'}}>
@@ -53,13 +64,13 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                             <Text style={{padding: 10,
                                 textAlign:'left',
                                 color: Colors.black,
-                                fontSize: 12,
+                                fontSize: 13,
                                 margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
                                                     
                     </View> 
                     </View>
 
-                    <Text style={{fontSize:9, color: Colors.medGrey, textAlign: 'right', marginLeft: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
+                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginLeft: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
                 </View> 
             )}
                  

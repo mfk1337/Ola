@@ -67,5 +67,9 @@
 		<string>Ionicons.ttf</string>
 		<string>RobotoMono.ttf</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library Access for using in chat messages.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera for use in chat messages.</string>
 </dict>
 </plist>
