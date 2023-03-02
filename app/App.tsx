@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen'
 
-import { LoginScreen, RoomsScreen } from './screens';
+import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 
 import auth from '@react-native-firebase/auth';
 
@@ -27,6 +27,7 @@ const App = () => {
   // Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
   setLoggedInUser(loggedInUser);
+  
     if (initializing) setInitializing(false);
   }
 
@@ -37,24 +38,34 @@ const App = () => {
 
   if (initializing) return null;
 
+  console.log(loggedInUser)
+
+  /**
+   * mfk: hJr4w8043aRo08DFceOr5ApEaNR2
+   * bear: 2sHbgIZRSIQJlot6kiWQRVIxqsS2
+   * 
+   */
+
   return(
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
         {
           !loggedInUser ? (
             // User is not logged in, show login screen
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Login" component={LoginScreen} />
+            </Stack.Navigator>
           ):(
             // User is logged in, show app content
-            <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms' }}/>
+            <Stack.Navigator >
+              <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms',headerShown: false }}/>
+              <Stack.Screen name="SingleRoom" component={SingleRoomScreen} options={{ title: 'Chat room',headerShown: false }}/>
+              <Stack.Screen name="ImageFullsize" component={ImageFullsizeScreen} options={{ title: 'Image fullsize screen', presentation: 'modal',headerShown: false,}}/>
+            </Stack.Navigator>
           )
         }                
-      </Stack.Navigator>
     </NavigationContainer>
   )
 
 }
-
-
 
 export default App;

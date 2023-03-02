@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View,
 import { Colors } from "../assets/styles/colors";
 import { fontStyles } from "../assets/styles/fonts";
 
-interface BasicButtonProps {
+interface TopModalButtonProps {
     style?: StyleProp<ViewStyle>;
     title: string;
     color?: string;
@@ -13,32 +13,31 @@ interface BasicButtonProps {
 }
 
 
-export const BasicButton: React.FC<BasicButtonProps> = props => {
+export const TopModalButton: React.FC<TopModalButtonProps> = props => {
     const { style, title, color, disabled, loader,  onPress } = props;
     return (
-        <View
-            style={[styles.buttonContainer, style]}>            
-            {loader ? (<ActivityIndicator size="small" color={Colors.white} style={{height:22}} />):(
-                <TouchableOpacity
+        <TouchableOpacity
                 disabled={disabled}
-                onPress={onPress}>
-                    <Text style={styles.buttonTitle}>{title}</Text>
-                </TouchableOpacity>
+                onPress={onPress}
+            style={[styles.buttonContainer, style]}>            
+            {loader ? (
+                <ActivityIndicator size="small" color={Colors.white} style={{height:22}} />
+                ):(               
+                <Text style={styles.buttonTitle}>{title}</Text>                
             )}
-        </View>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     buttonContainer: {
-        borderWidth: 1,
-        borderColor: Colors.black,
+        borderBottomColor: Colors.lightGreen,
+        borderBottomWidth: 1,
         alignItems:"center",
         justifyContent:"center",
         height: 50,
-        borderRadius: 10,
-        marginTop: 10,
-        backgroundColor: Colors.black,
+        borderRadius: 0,
+        backgroundColor: Colors.darkestGrey,
         
     },
     buttonTitle: {

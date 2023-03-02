@@ -10,7 +10,7 @@ import { BasicListItem } from "../components/items/basic-list-item";
 import { Colors } from "../assets/styles/colors";
 
 
-export const RoomsScreen = () => {
+export const RoomsScreen = ({navigation}: {navigation: any}) => {
 
     const [loading, setLoading] = useState(true); 
     const [refreshingList, setRefreshingList] = useState(false); 
@@ -19,6 +19,7 @@ export const RoomsScreen = () => {
     useEffect(() => {
         const subscriber = firestore()
           .collection('chatrooms')
+          .orderBy('name', 'asc')
           .get()
           .then(querySnapshot => {
             const chatrooms = [];
@@ -35,18 +36,26 @@ export const RoomsScreen = () => {
           });      
       }, []);
 
-
     return(
         <SafeAreaView style={[sharedStyles.container]}>
-            <Header title='Chat rooms' style={{textAlign: 'center'}}/>       
+            <Header title='Chat rooms' style={{textAlign: 'center',  marginBottom: 10}}/>       
 
-            <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item}/>}
+            <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{
+                            
+              navigation.navigate('SingleRoom', {
+                roomName: item.name,
+                roomDesc: item.desc,
+                roomId: item.key
+              });
+
+            }} />}
             onRefresh={() => {
               console.log("Refreshing list...")
               // TODO: Tidy up this code
               setRefreshingList(true)
               const subscriber = firestore()
                 .collection('chatrooms')
+                .orderBy('name', 'asc')
                 .get()
                 .then(querySnapshot => {
                   const chatrooms = [];
