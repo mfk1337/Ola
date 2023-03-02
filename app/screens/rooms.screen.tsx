@@ -19,7 +19,7 @@ export const RoomsScreen = ({navigation}: {navigation: any}) => {
     useEffect(() => {
         const subscriber = firestore()
           .collection('chatrooms')
-          .orderBy('name', 'asc')
+          .orderBy('new_msg_date', 'desc')
           .get()
           .then(querySnapshot => {
             const chatrooms = [];
@@ -30,7 +30,7 @@ export const RoomsScreen = ({navigation}: {navigation: any}) => {
                 key: documentSnapshot.id,
               });
             });
-            console.log("lol")
+            console.log("Got chatroom list...")
             setChatrooms(chatrooms);
             setLoading(false);
           });      
@@ -55,7 +55,7 @@ export const RoomsScreen = ({navigation}: {navigation: any}) => {
               setRefreshingList(true)
               const subscriber = firestore()
                 .collection('chatrooms')
-                .orderBy('name', 'asc')
+                .orderBy('new_msg_date', 'desc')
                 .get()
                 .then(querySnapshot => {
                   const chatrooms = [];
