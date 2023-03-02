@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen'
 
-import { LoginScreen, RoomsScreen, SingleRoomScreen } from './screens';
+import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 
 import auth from '@react-native-firebase/auth';
 
@@ -59,6 +59,7 @@ const App = () => {
             <Stack.Navigator >
               <Stack.Screen name="Rooms" component={RoomsScreen} options={{ title: 'Chat rooms',headerShown: false }}/>
               <Stack.Screen name="SingleRoom" component={SingleRoomScreen} options={{ title: 'Chat room',headerShown: false }}/>
+              <Stack.Screen name="ImageFullsize" component={ImageFullsizeScreen} options={{ title: 'Image fullsize screen', presentation: 'modal',headerShown: false,}}/>
             </Stack.Navigator>
           )
         }                
@@ -66,7 +67,5 @@ const App = () => {
   )
 
 }
-
-
 
 export default App;

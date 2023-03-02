@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableHighlight, Image} from 'react-native';
+import { Text, View, TouchableHighlight, Image, TouchableOpacity} from 'react-native';
 import { fontStyles } from '../../assets/styles/fonts';
 import { Colors } from '../../assets/styles/colors';
 import Moment from 'moment';
@@ -8,12 +8,13 @@ interface ChatMsgListItemProps {
     item: any;
     currentUser: boolean;
     onPress?: () => void;
+    imageOnPress?: () => void;
     defaultItemBgColor?: string;
 }
 
 export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
 
-    const { item, currentUser, onPress, defaultItemBgColor } = props;
+    const { item, currentUser, onPress, imageOnPress, defaultItemBgColor } = props;
 
     var msgDateTime = ''
     if(item.msg_date){
@@ -35,8 +36,9 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                                 {
                                     
                                     item.msg_image_url ? (
+                                        <TouchableOpacity onPress={imageOnPress}>
                                         <Image style={{width:'100%', height: undefined, aspectRatio: 1,  resizeMode: 'cover'}} source={{uri: item.msg_image_url}} />
-                                        
+                                        </TouchableOpacity>
                                     ):(
                                         <Text style={{padding: 10,
                                             textAlign:'left',
@@ -45,9 +47,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                                             margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
                                     )
                                 }
-                                
-                                
-                                                        
+                                                 
                         </View> 
                         <Image source={require('../../assets/img/default-avatar.jpeg')} style={{height:36, width:36, borderRadius:36,marginRight: 5}}/>   
                     </View>

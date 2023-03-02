@@ -30,8 +30,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     useEffect(() => {
                  
-        const onQueryError = (error) => {
-            console.error("onQueryError: "+error);
+        const onQueryError = (error: any) => {
+            console.log("Firestore database get chat messages onQueryError:",error);
         }          
 
         const subscriber = firestore()
@@ -102,6 +102,9 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             console.log("scrollToEnd1")
             setScrollToEnd(true)
 
+        })
+        .catch((error) => {
+            console.log("Firestore database get more chat messages error:",error);
         });
     }
 
@@ -126,7 +129,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             msg_date: firestore.FieldValue.serverTimestamp(),
         })
         .then(() => {
-            console.log('Msg added!');
+            console.log('Chat message added!');
+        })
+        .catch((error) => {
+            console.log("Firestore database add chat message error:",error);
         });
 
         setChatMsg('')
@@ -140,9 +146,6 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             index: 0,
           })  }, 200)
     }
-
-    // State for storing chosen image asset information
-    const [responseGallery, setResponseGallery] = useState<any>(null);
     
     // Open image picker, sets state: responseGallery, when image is chosen.
     const pickImageFromGallery = async () => {
@@ -162,28 +165,47 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             // Because selection limit is set to 1, we only check first item in the assets array returned.
             console.log(response.assets![0])
             //response.assets ? setResponseGallery(response.assets![0]) : 
-            
-            const refFileName = '/chat_media/'+response.assets![0].fileName;
-            const refPutFileStorage = storage().ref(refFileName);
-            const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
-            taskPutfileStorage.then(async () => {
-                const url = await storage().ref(refFileName).getDownloadURL();
-                console.log('Image uploaded to the bucket!', url);
+                        
+            try {
 
-                firestore()
-                .collection('chatmessages')
-                .add({
-                    chatroom_id: roomId,
-                    msg_text: 'image',
-                    msg_date: firestore.FieldValue.serverTimestamp(),
-                    msg_image_url: url
-                })
-                .then(() => {
-                    console.log('Msg added!');
-                    setCameraButtonLoading(false)
+                const refFileName = '/chat_media/'+response.assets![0].fileName;
+                const refPutFileStorage = storage().ref(refFileName);
+                const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
+                taskPutfileStorage.then(async () => {
+                    const url = await storage().ref(refFileName).getDownloadURL();
+                    console.log('Image uploaded to the bucket!', url);
+    
+                    firestore()
+                    .collection('chatmessages')
+                    .add({
+                        chatroom_id: roomId,
+                        msg_text: 'image',
+                        msg_date: firestore.FieldValue.serverTimestamp(),
+                        msg_image_url: url
+                    })
+                    .then(() => {
+                        console.log('Chat message added!');
+                        setCameraButtonLoading(false)
+                    })
+                    .catch((error) => {
+                        console.log("Firestore database add image chat message error:",error);
+                        setCameraButtonLoading(false)
+                    });
+    
                 });
+                taskPutfileStorage.catch((error) => {
+                    console.log("Firestore storage upload error #1:",error);
+                    setCameraButtonLoading(false)
+                })
+            
+            } catch (error) {
+                console.log("Firestore storage upload error #2:",error);
+                setCameraButtonLoading(false)
+            } 
 
-            });
+           
+            
+
 
         });
 
@@ -206,27 +228,42 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             console.log(response.assets![0])
             //response.assets ? setResponseGallery(response.assets![0]) : 
             
-            const refFileName = '/chat_media/'+response.assets![0].fileName;
-            const refPutFileStorage = storage().ref(refFileName);
-            const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
-            taskPutfileStorage.then(async () => {
-                const url = await storage().ref(refFileName).getDownloadURL();
-                console.log('Image uploaded to the bucket!', url);
+            try {
 
-                firestore()
-                .collection('chatmessages')
-                .add({
-                    chatroom_id: roomId,
-                    msg_text: 'image',
-                    msg_date: firestore.FieldValue.serverTimestamp(),
-                    msg_image_url: url
-                })
-                .then(() => {
-                    console.log('Msg added!');
-                    setCameraButtonLoading(false)
+                const refFileName = '/chat_media/'+response.assets![0].fileName;
+                const refPutFileStorage = storage().ref(refFileName);
+                const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
+                taskPutfileStorage.then(async () => {
+                    const url = await storage().ref(refFileName).getDownloadURL();
+                    console.log('Image uploaded to the bucket!', url);
+
+                    firestore()
+                    .collection('chatmessages')
+                    .add({
+                        chatroom_id: roomId,
+                        msg_text: 'image',
+                        msg_date: firestore.FieldValue.serverTimestamp(),
+                        msg_image_url: url
+                    })
+                    .then(() => {
+                        console.log('Chat message added!');
+                        setCameraButtonLoading(false)
+                    })
+                    .catch((error) => {
+                        console.log("Firestore database add image chat message error:",error);
+                        setCameraButtonLoading(false)
+                    });
+
                 });
-
-            });
+                taskPutfileStorage.catch((error) => {
+                    console.log("Firestore storage upload error #1:",error);
+                    setCameraButtonLoading(false)
+                })
+            
+            } catch (error) {
+                console.log("Firestore storage upload error #2:",error);
+                setCameraButtonLoading(false)
+            } 
 
         });
 
@@ -240,23 +277,16 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             {text: 'Cancel', onPress: () => setCameraButtonLoading(false), style: 'cancel'},
         ]);
     }
-    
-
-
-    //data={[...msgs].reverse()}
 
     return(
         <SafeAreaView style={[sharedStyles.container]}>
 
             <TouchableOpacity style={{position: 'absolute',left:0, top:55, zIndex: 1,}}  onPress={()=>{
                 navigation.popToTop()
-            }}><Icon size={34} color="black" name="chevron-back"/></TouchableOpacity>       
-            
+            }}><Icon size={34} color="black" name="chevron-back"/></TouchableOpacity>                   
 
             <Header title={roomName} style={{textAlign: 'center'}}/>       
-            <SubHeader text={roomDesc} style={{textAlign: 'center', marginBottom: 10}}/>
-
-            
+            <SubHeader text={roomDesc} style={{textAlign: 'center', marginBottom: 10}}/>           
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -269,7 +299,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     data={msgs}
                     inverted={true}
                     onEndReached={getMoreMessages}
-                    renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} />}/>  
+                    renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} imageOnPress={()=>{
+                        navigation.navigate('ImageFullsize', {
+                            image_url: item.msg_image_url,
+                          });            
+                    }} />}/>  
                 ):(
                     <View style={styles.basicListStyle}>
                         <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>
