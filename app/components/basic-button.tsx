@@ -16,16 +16,17 @@ interface BasicButtonProps {
 export const BasicButton: React.FC<BasicButtonProps> = props => {
     const { style, title, color, disabled, loader,  onPress } = props;
     return (
-        <View
-            style={[styles.buttonContainer, style]}>            
-            {loader ? (<ActivityIndicator size="small" color={Colors.white} style={{height:22}} />):(
-                <TouchableOpacity
+        <TouchableOpacity
                 disabled={disabled}
-                onPress={onPress}>
-                    <Text style={styles.buttonTitle}>{title}</Text>
-                </TouchableOpacity>
+                onPress={onPress}
+                style={[styles.buttonContainer, style]}>            
+            {loader ? 
+            (
+                <ActivityIndicator size="small" color={Colors.white} style={{height:22}} />            
+            ):(
+               <Text style={styles.buttonTitle}>{title}</Text>               
             )}
-        </View>
+        </TouchableOpacity>
     );
 };
 

@@ -95,6 +95,59 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     });
 
   }
+
+  // onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))
+  const handleSignInWithFacebook = async () => {
+    
+    setLoading(true)
+    
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  
+    if (result.isCancelled) {
+      console.log("User cancelled the login process")
+      setLoading(false)
+      return
+    }
+  
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+  
+    if (!data) {
+      Alert.alert("Something went wrong with Facebook signin");
+      setLoading(false)
+      return
+    }
+  
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+
+    auth()
+    .signInWithCredential(facebookCredential).
+    then(() => {
+      console.log('User account signed in!');
+      setLoading(false)
+      navigation.navigate('Rooms')
+    })
+    .catch(error => {
+
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert("The email address is already in use!");
+      }
+
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert("The email address is invalid!");
+      }
+
+      if (error.code === 'auth/too-many-requests') {
+        Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+      }
+
+      setLoading(false)
+      console.log(error);
+    });
+
+  }
   
   const handleSignIn = async () => {
 
@@ -151,29 +204,6 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   }
 
 
-  async function onFacebookButtonPress() {
-    // Attempt login with permissions
-    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-  
-    if (result.isCancelled) {
-      throw 'User cancelled the login process';
-    }
-  
-    // Once signed in, get the users AccesToken
-    const data = await AccessToken.getCurrentAccessToken();
-  
-    if (!data) {
-      throw 'Something went wrong obtaining access token';
-    }
-  
-    // Create a Firebase credential with the AccessToken
-    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
-  
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(facebookCredential);
-  }
-
-
   return(
     <SafeAreaView style={sharedStyles.container}>
                 
@@ -210,22 +240,19 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={handleSignIn}
             />
-          <BasicButton title="Login" onPress={handleSignIn} />
+          <BasicButton title="Login" onPress={handleSignIn} />        
+          
+          <BasicButton title="Sign in with Facebook" onPress={handleSignInWithFacebook} style={{marginTop:10}}/>
 
           <View style={{alignItems:"center"}}>
             <GoogleSigninButton
-              style={{ width: 192, height: 48, marginTop:15}}
+              style={{ width: 192, height: 48, marginTop:5}}
               size={GoogleSigninButton.Size.Wide}
               color={GoogleSigninButton.Color.Light}
               onPress={handleSignInWithGoogle}
               disabled={loading}
             />
           </View>
-
-          <Button
-          title="Facebook Sign-In"
-          onPress={() => onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
-        />
 
         </View>
         { loading ? (<Loading />):(null)}
