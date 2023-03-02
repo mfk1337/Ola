@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Alert, Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, SafeAreaView, Text, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { BasicButton } from "../components/basic-button";
 
@@ -9,6 +9,8 @@ import { Loading } from "../components/loading-overlay";
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
 import { Colors } from "../assets/styles/colors";
+
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
@@ -149,6 +151,29 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   }
 
 
+  async function onFacebookButtonPress() {
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+  
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+  
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+  
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+  
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(facebookCredential);
+  }
+
+
   return(
     <SafeAreaView style={sharedStyles.container}>
                 
@@ -196,6 +221,11 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
               disabled={loading}
             />
           </View>
+
+          <Button
+          title="Facebook Sign-In"
+          onPress={() => onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
+        />
 
         </View>
         { loading ? (<Loading />):(null)}

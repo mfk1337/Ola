@@ -28,8 +28,20 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.627663599334-ue4oo3bm59dnkaekdkgs1tt0qp0bvkj8</string>
+				<string>fb474126901478762</string>
 			</array>
 		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>474126901478762</string>
+	<key>FacebookClientToken</key>
+	<string>cf9248acef8e940f5e4442feb2a0f1a6</string>
+	<key>FacebookDisplayName</key>
+	<string>Ola chat</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
