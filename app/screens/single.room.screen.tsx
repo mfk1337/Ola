@@ -115,6 +115,21 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         
     }, [scrollToEnd]);
 
+    const updateChatroom = () => {
+        firestore()
+        .collection('chatrooms')
+        .doc(roomId)
+        .update({
+            new_msg_date: firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => {
+            console.log('Chatroom new_msg_date updated...');
+        })
+        .catch((error) => {
+            console.log("Firestore database update chatroom data error:",error);
+        });
+    }
+
     const handleSendChatMsg = () => {
         console.log({chatMsg})
 
@@ -130,6 +145,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         })
         .then(() => {
             console.log('Chat message added!');
+            updateChatroom()
         })
         .catch((error) => {
             console.log("Firestore database add chat message error:",error);
@@ -185,6 +201,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     })
                     .then(() => {
                         console.log('Chat message added!');
+                        updateChatroom()
                         setCameraButtonLoading(false)
                     })
                     .catch((error) => {
@@ -247,6 +264,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     })
                     .then(() => {
                         console.log('Chat message added!');
+                        updateChatroom()
                         setCameraButtonLoading(false)
                     })
                     .catch((error) => {
@@ -282,7 +300,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         <SafeAreaView style={[sharedStyles.container]}>
 
             <TouchableOpacity style={{position: 'absolute',left:0, top:55, zIndex: 1,}}  onPress={()=>{
-                navigation.popToTop()
+                navigation.navigate({
+                    name: 'Rooms',
+                    params: { refreshRoomList: Date.now() },
+                    merge: true,
+                  });
             }}><Icon size={34} color="black" name="chevron-back"/></TouchableOpacity>                   
 
             <Header title={roomName} style={{textAlign: 'center'}}/>       

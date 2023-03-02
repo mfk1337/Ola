@@ -10,82 +10,72 @@ import { BasicListItem } from "../components/items/basic-list-item";
 import { Colors } from "../assets/styles/colors";
 
 
-export const RoomsScreen = ({navigation}: {navigation: any}) => {
+export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
-    const [loading, setLoading] = useState(true); 
-    const [refreshingList, setRefreshingList] = useState(false); 
-    const [chatrooms, setChatrooms] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [refreshingList, setRefreshingList] = useState(false); 
+  const [chatrooms, setChatrooms] = useState([]); 
 
-    useEffect(() => {
-        const subscriber = firestore()
-          .collection('chatrooms')
-          .orderBy('new_msg_date', 'desc')
-          .get()
-          .then(querySnapshot => {
-            const chatrooms = [];
-      
-            querySnapshot.forEach(documentSnapshot => {
-                chatrooms.push({
-                ...documentSnapshot.data(),
-                key: documentSnapshot.id,
-              });
+  useEffect(() => {
+    getChatRoomList()
+  }, [route.params?.refreshRoomList]);
+
+  const refreshChatroomList = () => {
+
+    console.log("Refreshing list...")
+    setRefreshingList(true)
+    getChatRoomList()
+    setRefreshingList(false)
+
+  } 
+  
+  const getChatRoomList = () => {
+
+    const subscriber = firestore()
+    .collection('chatrooms')
+    .orderBy('new_msg_date', 'desc')
+    .get()
+    .then(querySnapshot => {
+      const chatrooms = [];
+
+      querySnapshot.forEach(documentSnapshot => {
+          chatrooms.push({
+          ...documentSnapshot.data(),
+          key: documentSnapshot.id,
+        });
+      });
+      console.log("Got chatroom list...")
+      setLoading(false)
+      setChatrooms(chatrooms);
+    });
+
+  }
+
+  return(
+      <SafeAreaView style={[sharedStyles.container]}>
+          <Header title='Chat rooms' style={{textAlign: 'center',  marginBottom: 10}}/>       
+
+          <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{                            
+            navigation.navigate('SingleRoom', {
+              roomName: item.name,
+              roomDesc: item.desc,
+              roomId: item.key
             });
-            console.log("Got chatroom list...")
-            setChatrooms(chatrooms);
-            setLoading(false);
-          });      
-      }, []);
-
-    return(
-        <SafeAreaView style={[sharedStyles.container]}>
-            <Header title='Chat rooms' style={{textAlign: 'center',  marginBottom: 10}}/>       
-
-            <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{
-                            
-              navigation.navigate('SingleRoom', {
-                roomName: item.name,
-                roomDesc: item.desc,
-                roomId: item.key
-              });
-
-            }} />}
-            onRefresh={() => {
-              console.log("Refreshing list...")
-              // TODO: Tidy up this code
-              setRefreshingList(true)
-              const subscriber = firestore()
-                .collection('chatrooms')
-                .orderBy('new_msg_date', 'desc')
-                .get()
-                .then(querySnapshot => {
-                  const chatrooms = [];
-            
-                  querySnapshot.forEach(documentSnapshot => {
-                      chatrooms.push({
-                      ...documentSnapshot.data(),
-                      key: documentSnapshot.id,
-                    });
-                  });
-                  console.log("List refreshed...")
-                  setRefreshingList(false)
-                  setChatrooms(chatrooms);
-                });
-            
-            }}
-            refreshing={refreshingList}
-            />                              
-           
-            <Button title="Log off" onPress={()=>{
-                auth()
-                .signOut()
-                .then(() => console.log('User signed out!'));
+          }} />}
+          onRefresh={refreshChatroomList}
+          refreshing={refreshingList}
+          />                           
+        
+          <Button title="Log off" onPress={()=>{
+              auth()
+              .signOut()
+              .then(() => console.log('User signed out!'));
             }} />
 
-
-        { loading ? (<Loading />):(null)}
-        </SafeAreaView>
-        
-    )
+      { loading ? (<Loading />):(null)}
+      </SafeAreaView>
+      
+  )
 
 }
 
