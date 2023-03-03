@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View, Alert } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { SubHeader } from "../components/headers";
@@ -12,9 +12,12 @@ import { IconButton } from "../components/icon-button";
 import * as ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { CustomNav } from "../components/custom-nav";
+import { UserContext } from "../context/auth.context";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
+    const userCred = useContext(UserContext);
+    
     const { roomName, roomDesc, roomId } = route.params;
    
     const [scrollToEnd, setScrollToEnd] = useState(); 
@@ -142,6 +145,9 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             chatroom_id: roomId,
             msg_text: chatMsg,
             msg_date: firestore.FieldValue.serverTimestamp(),
+            sender_id: userCred.uid,
+            sender_name: userCred.name ? userCred.name : userCred.email,
+            sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
         })
         .then(() => {
             console.log('Chat message added!');
@@ -197,7 +203,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         chatroom_id: roomId,
                         msg_text: 'image',
                         msg_date: firestore.FieldValue.serverTimestamp(),
-                        msg_image_url: url
+                        msg_image_url: url,
+                        sender_id: userCred.uid,
+                        sender_name: userCred.name ? userCred.name : userCred.email,
+                        sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
                     })
                     .then(() => {
                         console.log('Chat message added!');
@@ -260,7 +269,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         chatroom_id: roomId,
                         msg_text: 'image',
                         msg_date: firestore.FieldValue.serverTimestamp(),
-                        msg_image_url: url
+                        msg_image_url: url,
+                        sender_id: userCred.uid,
+                        sender_name: userCred.name ? userCred.name : userCred.email,
+                        sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
                     })
                     .then(() => {
                         console.log('Chat message added!');
@@ -324,11 +336,17 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     data={msgs}
                     inverted={true}
                     onEndReached={getMoreMessages}
-                    renderItem={({item}) => <ChatMsgListItem item={item} currentUser={true} imageOnPress={()=>{
-                        navigation.navigate('ImageFullsize', {
-                            image_url: item.msg_image_url,
-                          });            
-                    }} />}/>  
+                    renderItem={({item}) => 
+                        <ChatMsgListItem 
+                            item={item} 
+                            currentUser={item.sender_id == userCred.uid ? true : false}
+                            imageOnPress={()=>{
+                                navigation.navigate('ImageFullsize', {
+                                    image_url: item.msg_image_url,
+                                });            
+                            }} 
+                        />}
+                    />  
                 ):(
                     <View style={styles.basicListStyle}>
                         <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>

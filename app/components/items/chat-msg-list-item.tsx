@@ -49,28 +49,40 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                                 }
                                                  
                         </View> 
-                        <Image source={require('../../assets/img/default-avatar.jpeg')} style={{height:36, width:36, borderRadius:36,marginRight: 5}}/>   
+                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require('../../assets/img/default-avatar.jpg')} style={{height:36, width:36, borderRadius:36,marginRight: 5}}/>   
                     </View>
 
-                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginRight: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
+                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginRight: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>{item.sender_name ? item.sender_name : 'NoName'} - {msgDateTime}</Text>          
                 </View>
             ):(
                 <View style={{alignItems: 'flex-start'}}>
 
                     <View style={{flexDirection: 'row'}}>
-                    <Image source={require('../../assets/img/default-avatar.jpeg')} style={{height:36, width:36, borderRadius:36,marginLeft: 5}}/>   
+                    <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require('../../assets/img/default-avatar.jpg')} style={{height:36, width:36, borderRadius:36,marginLeft: 5}}/>   
 
-                    <View style={{backgroundColor: Colors.lightGrey, marginLeft:10, marginRight:10, marginBottom:2, borderRadius:15, borderBottomStartRadius:0, maxWidth: '70%',}}>                              
-                            <Text style={{padding: 10,
-                                textAlign:'left',
-                                color: Colors.black,
-                                fontSize: 13,
-                                margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
+                    <View style={{backgroundColor: Colors.lightGrey, overflow:'hidden', marginLeft:10, marginRight:10, marginBottom:2, borderRadius:15, borderBottomStartRadius:0, maxWidth: '70%',}}>                              
+                            
+                    {
+                                    
+                                    item.msg_image_url ? (
+                                        <TouchableOpacity onPress={imageOnPress}>
+                                        <Image style={{width:'100%', height: undefined, aspectRatio: 1,  resizeMode: 'cover'}} source={{uri: item.msg_image_url}} />
+                                        </TouchableOpacity>
+                                    ):(
+                                        <Text style={{padding: 10,
+                                            textAlign:'left',
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                            margin:0,...fontStyles.fontRoboto}}>{item.msg_text}</Text>
+                                    )
+                                }
+                            
+                            
                                                     
                     </View> 
                     </View>
 
-                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginLeft: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>Fayyaz - {msgDateTime}</Text>          
+                    <Text style={{fontSize:11, color: Colors.medGrey, textAlign: 'right', marginLeft: 50, marginBottom: 10, ...fontStyles.fontRoboto}}>{item.sender_name ? item.sender_name : 'NoName'} - {msgDateTime}</Text>          
                 </View> 
             )}
                  
