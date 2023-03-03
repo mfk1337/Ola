@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Alert, Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, SafeAreaView, Text, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { BasicButton } from "../components/basic-button";
 
@@ -9,6 +9,8 @@ import { Loading } from "../components/loading-overlay";
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
 import { Colors } from "../assets/styles/colors";
+
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
@@ -89,6 +91,59 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
       setLoading(false)
 
+      console.log(error);
+    });
+
+  }
+
+  // onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))
+  const handleSignInWithFacebook = async () => {
+    
+    setLoading(true)
+    
+    // Attempt login with permissions
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  
+    if (result.isCancelled) {
+      console.log("User cancelled the login process")
+      setLoading(false)
+      return
+    }
+  
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+  
+    if (!data) {
+      Alert.alert("Something went wrong with Facebook signin");
+      setLoading(false)
+      return
+    }
+  
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+
+    auth()
+    .signInWithCredential(facebookCredential).
+    then(() => {
+      console.log('User account signed in!');
+      setLoading(false)
+      navigation.navigate('Rooms')
+    })
+    .catch(error => {
+
+      if (error.code === 'auth/email-already-in-use') {
+        Alert.alert("The email address is already in use!");
+      }
+
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert("The email address is invalid!");
+      }
+
+      if (error.code === 'auth/too-many-requests') {
+        Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+      }
+
+      setLoading(false)
       console.log(error);
     });
 
@@ -185,11 +240,13 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={handleSignIn}
             />
-          <BasicButton title="Login" onPress={handleSignIn} />
+          <BasicButton title="Login" onPress={handleSignIn} />        
+          
+          <BasicButton title="Sign in with Facebook" onPress={handleSignInWithFacebook} style={{marginTop:10}}/>
 
           <View style={{alignItems:"center"}}>
             <GoogleSigninButton
-              style={{ width: 192, height: 48, marginTop:15}}
+              style={{ width: 192, height: 48, marginTop:5}}
               size={GoogleSigninButton.Size.Wide}
               color={GoogleSigninButton.Color.Light}
               onPress={handleSignInWithGoogle}

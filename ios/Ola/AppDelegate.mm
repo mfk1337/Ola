@@ -2,6 +2,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <Firebase.h>
 #import <GoogleSignIn/GIDSignIn.h>
+#import <FBSDKCoreKit/FBSDKCoreKit-swift.h>
 
 @implementation AppDelegate
 
@@ -14,7 +15,19 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                       didFinishLaunchingWithOptions:launchOptions];
+
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [[FBSDKApplicationDelegate sharedInstance]application:app
+                                                      openURL:url
+                                                      options:options];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
