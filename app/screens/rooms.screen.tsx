@@ -8,6 +8,7 @@ import { Loading } from "../components/loading-overlay";
 import { BasicList } from "../components/basic-list";
 import { BasicListItem } from "../components/items/basic-list-item";
 import { Colors } from "../assets/styles/colors";
+import { CustomNav } from "../components/custom-nav";
 
 
 export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
@@ -53,8 +54,8 @@ export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) =>
 
   return(
       <SafeAreaView style={[sharedStyles.container]}>
-          <Header title='Chat rooms' style={{textAlign: 'center',  marginBottom: 10}}/>       
-
+          <CustomNav title='Chat rooms' />
+          
           <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{                            
             navigation.navigate('SingleRoom', {
               roomName: item.name,

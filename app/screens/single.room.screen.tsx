@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View, Alert } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
-import { Header, SubHeader } from "../components/headers";
+import { SubHeader } from "../components/headers";
 import { Loading } from "../components/loading-overlay";
 import firestore from '@react-native-firebase/firestore';
 import { Colors } from "../assets/styles/colors";
 import { BasicList } from "../components/basic-list";
 import { ChatMsgListItem } from "../components/items/chat-msg-list-item";
 import { BasicButton } from "../components/basic-button";
-import Icon from "react-native-vector-icons/Ionicons";
 import { IconButton } from "../components/icon-button";
 import * as ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import { CustomNav } from "../components/custom-nav";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -299,16 +299,19 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     return(
         <SafeAreaView style={[sharedStyles.container]}>
 
-            <TouchableOpacity style={{position: 'absolute',left:0, top:55, zIndex: 1,}}  onPress={()=>{
+            <CustomNav
+            title={roomName} 
+            leftButtonVisible={true}
+            leftButtonIcon="chevron-back"
+            leftButtonOnPress={()=>{
                 navigation.navigate({
                     name: 'Rooms',
                     params: { refreshRoomList: Date.now() },
                     merge: true,
                   });
-            }}><Icon size={34} color="black" name="chevron-back"/></TouchableOpacity>                   
-
-            <Header title={roomName} style={{textAlign: 'center'}}/>       
-            <SubHeader text={roomDesc} style={{textAlign: 'center', marginBottom: 10}}/>           
+            }}
+            />      
+            <SubHeader text={roomDesc} />           
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
