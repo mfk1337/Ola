@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, StyleSheet, Text, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Colors } from "../assets/styles/colors";
 import { fontStyles } from "../assets/styles/fonts";
 
@@ -30,7 +30,11 @@ export const SubHeader: React.FC<SubHeaderProps> = props => {
 
     const { style, text, color, size } = props;
 
-    return <Text style={[style, styles.subHeader]}>{text}</Text>
+    return (
+        <View style={styles.subHeaderContainer}>
+            <Text style={[style, styles.subHeaderText]}>{text}</Text>
+        </View>
+    )
 
 }
 
@@ -44,12 +48,17 @@ const styles = StyleSheet.create({
         paddingRight:10,
     },
 
-    subHeader: {
+    subHeaderContainer: {
+        backgroundColor: Colors.lightGreen,
+    },
+
+    subHeaderText: {
+        textAlign: "center",
         fontSize:13,
         ...fontStyles.fontRoboto,
         color: Colors.black,
-        paddingLeft:50,
-        paddingRight:50,
+        padding:10,
+        paddingRight:10,
     },
    
 });
