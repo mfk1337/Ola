@@ -27,6 +27,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     const [lastMsgPointer, setLastMsgPointer] = useState();
 
     const [cameraButtonLoading, setCameraButtonLoading] = useState(false); 
+    const [msgSendButtonLoading, setMsgSendButtonLoading] = useState(false); 
 
     const chatFlatlistRef = useRef<FlatList | null>(null);
     const chatTextInput = useRef<TextInput | null>(null);
@@ -135,9 +136,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     const handleSendChatMsg = () => {
         console.log({chatMsg})
-
+        
         // If no chat msg, then do nothing.
         if(!chatMsg) return
+        
+        setMsgSendButtonLoading(true)
 
         firestore()
         .collection('chatmessages')
@@ -151,10 +154,12 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         })
         .then(() => {
             console.log('Chat message added!');
+            setMsgSendButtonLoading(false)
             updateChatroom()
         })
         .catch((error) => {
             console.log("Firestore database add chat message error:",error);
+            setMsgSendButtonLoading(false)
         });
 
         setChatMsg('')
@@ -167,6 +172,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             animated: true,
             index: 0,
           })  }, 200)
+
+        setMsgSendButtonLoading(false)
     }
     
     // Open image picker, sets state: responseGallery, when image is chosen.
@@ -366,7 +373,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         value={chatMsg}
                         onChangeText={text => setChatMsg(text)}
                         />
-                    <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, paddingBottom:1}} onPress={handleSendChatMsg} />
+                    <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, paddingBottom:1}} loader={msgSendButtonLoading} disabled={msgSendButtonLoading} onPress={handleSendChatMsg} />
                 </View> 
 
             </KeyboardAvoidingView>   

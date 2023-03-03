@@ -36,7 +36,7 @@ const App = () => {
         uid: loggedInUser.uid,
         name: loggedInUser.displayName ? loggedInUser.displayName : '',
         avatar_url: loggedInUser.photoURL ? loggedInUser.photoURL : '',
-        email: loggedInUser.email,       
+        email: loggedInUser.email,
     })
     }
     
@@ -46,7 +46,7 @@ const App = () => {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    console.log("onAuthStateChanged",userCred)
+    console.log("onAuthStateChanged",loggedInUser)
     return subscriber; // unsubscribe on unmount
   }, []);
 
