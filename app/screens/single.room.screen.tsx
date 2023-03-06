@@ -20,6 +20,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     
     const { roomName, roomDesc, roomId } = route.params;
    
+    const [emptyErrMsg, setEmptyErrMsg] = useState("Loading messages..."); 
+
     const [scrollToEnd, setScrollToEnd] = useState(); 
     const [loading, setLoading] = useState(false); 
     const [msgs, setMsgs] = useState([]); 
@@ -32,11 +34,15 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     const chatFlatlistRef = useRef<FlatList | null>(null);
     const chatTextInput = useRef<TextInput | null>(null);
 
+    var scrollOffset = 0
+
     useEffect(() => {
                  
         const onQueryError = (error: any) => {
             console.log("Firestore database get chat messages onQueryError:",error);
         }          
+
+        console.log("Getting new messages...")  
 
         const subscriber = firestore()
         .collection('chatmessages')
@@ -56,16 +62,14 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                 
 
             });     
-            
-            
-            
+
             setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
 
-            setMsgs(msgs);            
+            if(!msgs.length) setEmptyErrMsg('Be the first to send a message...'); 
 
-        }, onQueryError);
+            setMsgs(msgs)                       
 
-        console.log("Getting new messages...")  
+        }, onQueryError);        
 
         // Unsubscribe from events when no longer in use
         return () => subscriber();
@@ -73,7 +77,12 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     const getMoreMessages = () => {
 
-        if(msgs.length < 50) return
+        if(msgs.length < 50) return        
+        
+        if(loading) return
+
+        if(!lastMsgPointer) return
+
         console.log("Getting MORE messages...")
         setLoading(true)
 
@@ -81,7 +90,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)
         .orderBy('msg_date','desc')
-        .limit(5)
+        .limit(20)
         .startAfter(lastMsgPointer)
         .get()
         .then(querySnapshot => {
@@ -103,21 +112,16 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
             setLoading(false)
 
-            console.log("scrollToEnd1")
-            setScrollToEnd(true)
+            setTimeout(() => {                
+                chatFlatlistRef.current?.scrollToOffset({offset: scrollOffset + 100, animated: true})  
+            }, 100)         
+            
 
         })
         .catch((error) => {
             console.log("Firestore database get more chat messages error:",error);
         });
     }
-
-    useEffect(() => {        
-        if(!scrollToEnd) return
-        setTimeout(() => {chatFlatlistRef.current?.scrollToEnd({animated:true})  }, 200)
-        console.log("scrollToEnd2")
-        
-    }, [scrollToEnd]);
 
     const updateChatroom = () => {
         firestore()
@@ -343,6 +347,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     data={msgs}
                     inverted={true}
                     onEndReached={getMoreMessages}
+                    onScroll={e => {
+                        scrollOffset = e.nativeEvent.contentOffset.y;
+                        //console.log({scrollOffset})
+                      }}
                     renderItem={({item}) => 
                         <ChatMsgListItem 
                             item={item} 
@@ -356,8 +364,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     />  
                 ):(
                     <View style={styles.basicListStyle}>
-                        <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>Be the first to send a message...</Text>
-                    </View>
+                        <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>{emptyErrMsg}</Text>
+                    </View>                  
                 )}
 
                 <View style={{flexDirection: 'row', padding:5, marginBottom:10}}>
