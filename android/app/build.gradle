@@ -172,3 +172,9 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 
 apply plugin: 'com.google.gms.google-services' // <- Add this line
 apply plugin: 'com.google.firebase.crashlytics'
+
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf' ] // Name of the font files you want to copy
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

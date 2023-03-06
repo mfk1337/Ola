@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Ola</string>
+    <string name="facebook_app_id">474126901478762</string>
+    <string name="fb_login_protocol_scheme">fb474126901478762</string>
+    <string name="facebook_client_token">cf9248acef8e940f5e4442feb2a0f1a6</string>
 </resources>
