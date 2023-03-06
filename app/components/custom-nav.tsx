@@ -48,8 +48,10 @@ const styles = StyleSheet.create({
    
     container: {
         backgroundColor: Colors.green,
-        height: 40,
+        height: 50,
         flexDirection: "row",
+        justifyContent: "center",
+        alignItems: 'center'
     },
 
     leftButton: {
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
         fontSize:21,
         ...fontStyles.fontRoboto,
         color: Colors.black,
-        paddingTop:2,
         paddingLeft:10,
         paddingRight:10,
     },
