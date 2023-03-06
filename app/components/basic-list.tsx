@@ -7,14 +7,16 @@ interface BasicListProps {
     renderItem: ListRenderItem<any>;
     onRefresh?: () => void;
     onEndReached?: () => void;
+    onEndReachedThreshold?: number;
     refreshing?: boolean;
     inverted?: boolean;
     refref?: any;
+    onScroll?: (e: any) => void;
 }
 
 export const BasicList: React.FC<BasicListProps> = props => {
 
-    const { style, data, refref, renderItem, onRefresh, onEndReached, refreshing, inverted } = props;
+    const { style, data, refref, renderItem, onRefresh, onEndReached, onEndReachedThreshold, refreshing, inverted, onScroll } = props;
 
     return <FlatList style={[style]}
     data={data}
@@ -25,6 +27,8 @@ export const BasicList: React.FC<BasicListProps> = props => {
     onEndReached={onEndReached}
     onRefresh={onRefresh}
     refreshing={refreshing}
+    onEndReachedThreshold={onEndReachedThreshold}
+    onScroll={onScroll}
     />  
 
 }
