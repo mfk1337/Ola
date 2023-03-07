@@ -80,7 +80,7 @@ export const updateChatroom = async (roomId: string) => {
     });
 }
 
-// UNDER CONSTRUCTION - Get chatroom messages
+// NOT USED - UNDER CONSTRUCTION - Get chatroom messages
 export const getChatMessages = async (roomId: string): Promise<ChatMessagesAndLastpointer> => {
 
     console.log("Getting MORE chat messages...")

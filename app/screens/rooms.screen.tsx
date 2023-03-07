@@ -10,6 +10,8 @@ import { Colors } from "../assets/styles/colors";
 import { CustomNav } from "../components/custom-nav";
 import { UserContext } from "../context/auth.context";
 import { getChatRoomList, ChatRooms } from "../services/firebase/database.service";
+import { signOutFirebase } from "../services/firebase/auth.service";
+import { NoFrameButton } from "../components/noframe-button";
 
 
 export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
@@ -66,11 +68,7 @@ export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) =>
           refreshing={refreshingList}
           />                           
         
-          <Button title="Log off" onPress={()=>{
-              auth()
-              .signOut()
-              .then(() => console.log('User signed out!'));
-            }} />
+          <NoFrameButton title="Log off" onPress={()=> signOutFirebase()} />
 
       { loading ? (<Loading />):(null)}
       </SafeAreaView>
