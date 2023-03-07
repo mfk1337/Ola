@@ -3,16 +3,18 @@ import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Tex
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { SubHeader } from "../components/headers";
 import { Loading } from "../components/loading-overlay";
-import firestore from '@react-native-firebase/firestore';
 import { Colors } from "../assets/styles/colors";
 import { BasicList } from "../components/basic-list";
 import { ChatMsgListItem } from "../components/items/chat-msg-list-item";
 import { BasicButton } from "../components/basic-button";
 import { IconButton } from "../components/icon-button";
 import * as ImagePicker from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import { CustomNav } from "../components/custom-nav";
 import { UserContext } from "../context/auth.context";
+import { addChatMessage, ChatMessages, getMoreChatMessages, updateChatroom } from "../services/firebase/database.service";
+
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { uploadImageFile } from "../services/firebase/storage.service";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -22,11 +24,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
    
     const [emptyErrMsg, setEmptyErrMsg] = useState("Loading messages..."); 
 
-    const [scrollToEnd, setScrollToEnd] = useState(); 
     const [loading, setLoading] = useState(false); 
-    const [msgs, setMsgs] = useState([]); 
+    const [msgs, setMsgs] = useState<ChatMessages[]>([]); 
     const [chatMsg, setChatMsg] = useState('');
-    const [lastMsgPointer, setLastMsgPointer] = useState();
+    const [lastMsgPointer, setLastMsgPointer] = useState<FirebaseFirestoreTypes.DocumentData>();
 
     const [cameraButtonLoading, setCameraButtonLoading] = useState(false); 
     const [msgSendButtonLoading, setMsgSendButtonLoading] = useState(false); 
@@ -44,6 +45,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
         console.log("Getting new messages...")  
 
+        // TODO, put in services.
         const subscriber = firestore()
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)
@@ -51,16 +53,13 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         .limit(50)
         .onSnapshot(querySnapshot => {
             
-            const msgs = [];                       
+            const msgs: ChatMessages[] = [];                       
 
-            querySnapshot.forEach(documentSnapshot => {
-                
+            querySnapshot.forEach(documentSnapshot => {                
                 msgs.push({
-                ...documentSnapshot.data(),
+                data: documentSnapshot.data(),
                 key: documentSnapshot.id,
-                });
-                
-
+                });             
             });     
 
             setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
@@ -71,9 +70,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
         }, onQueryError);        
 
-        // Unsubscribe from events when no longer in use
+        // Unsubscribe from events(Get new messages) when no longer in use
         return () => subscriber();
     }, []);
+    
 
     const getMoreMessages = () => {
 
@@ -82,87 +82,45 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         if(loading) return
 
         if(!lastMsgPointer) return
-
-        console.log("Getting MORE messages...")
+       
         setLoading(true)
 
-        firestore()
-        .collection('chatmessages')
-        .where("chatroom_id","==",roomId)
-        .orderBy('msg_date','desc')
-        .limit(20)
-        .startAfter(lastMsgPointer)
-        .get()
-        .then(querySnapshot => {
-            
-            const moreMsgs = [];                       
-
-            querySnapshot.forEach(documentSnapshot => {
-                
-                moreMsgs.push({
-                ...documentSnapshot.data(),
-                key: documentSnapshot.id,
-                });
-
-            });         
-            
-            setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
-            
-            setMsgs([...msgs, ...moreMsgs])
+        getMoreChatMessages(roomId, lastMsgPointer)
+        .then(moreChatmessages => {
+                 
+            setLastMsgPointer(moreChatmessages.lastpointer)
+            setMsgs([...msgs, ...moreChatmessages.chatmessages])
 
             setLoading(false)
 
             setTimeout(() => {                
                 chatFlatlistRef.current?.scrollToOffset({offset: scrollOffset + 100, animated: true})  
-            }, 100)         
-            
+            }, 100)    
 
         })
         .catch((error) => {
+            Alert.alert("Error getting more chatmessages...")
             console.log("Firestore database get more chat messages error:",error);
         });
     }
 
-    const updateChatroom = () => {
-        firestore()
-        .collection('chatrooms')
-        .doc(roomId)
-        .update({
-            new_msg_date: firestore.FieldValue.serverTimestamp(),
-        })
-        .then(() => {
-            console.log('Chatroom new_msg_date updated...');
-        })
-        .catch((error) => {
-            console.log("Firestore database update chatroom data error:",error);
-        });
-    }
+   
 
-    const handleSendChatMsg = () => {
-        console.log({chatMsg})
+    const handleSendChatMsg = async () => {
         
         // If no chat msg, then do nothing.
         if(!chatMsg) return
-        
+
         setMsgSendButtonLoading(true)
 
-        firestore()
-        .collection('chatmessages')
-        .add({
-            chatroom_id: roomId,
-            msg_text: chatMsg,
-            msg_date: firestore.FieldValue.serverTimestamp(),
-            sender_id: userCred.uid,
-            sender_name: userCred.name ? userCred.name : userCred.email,
-            sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
-        })
+        addChatMessage(roomId,chatMsg, userCred)
         .then(() => {
-            console.log('Chat message added!');
             setMsgSendButtonLoading(false)
-            updateChatroom()
+            updateChatroom(roomId)
         })
         .catch((error) => {
-            console.log("Firestore database add chat message error:",error);
+            console.log('error', error);
+            Alert.alert("Error adding chat message...")
             setMsgSendButtonLoading(false)
         });
 
@@ -180,7 +138,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         setMsgSendButtonLoading(false)
     }
     
-    // Open image picker, sets state: responseGallery, when image is chosen.
+    // Open image picker to choose image from phone gallery
     const pickImageFromGallery = async () => {
         
         ImagePicker.launchImageLibrary({
@@ -189,65 +147,45 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             selectionLimit: 1,
           }, async (response) => {
 
+            // If no image was chosen then return and stop loading animation for camera button.
             if(!response.assets){
                 console.log("Imagepicker closed again...no image chosen")
                 setCameraButtonLoading(false)
                 return
             }
-
-            // Because selection limit is set to 1, we only check first item in the assets array returned.
-            console.log(response.assets![0])
-            //response.assets ? setResponseGallery(response.assets![0]) : 
-                        
-            try {
-
-                const refFileName = '/chat_media/'+response.assets![0].fileName;
-                const refPutFileStorage = storage().ref(refFileName);
-                const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
-                taskPutfileStorage.then(async () => {
-                    const url = await storage().ref(refFileName).getDownloadURL();
-                    console.log('Image uploaded to the bucket!', url);
-    
-                    firestore()
-                    .collection('chatmessages')
-                    .add({
-                        chatroom_id: roomId,
-                        msg_text: 'image',
-                        msg_date: firestore.FieldValue.serverTimestamp(),
-                        msg_image_url: url,
-                        sender_id: userCred.uid,
-                        sender_name: userCred.name ? userCred.name : userCred.email,
-                        sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
-                    })
-                    .then(() => {
-                        console.log('Chat message added!');
-                        updateChatroom()
-                        setCameraButtonLoading(false)
-                    })
-                    .catch((error) => {
-                        console.log("Firestore database add image chat message error:",error);
-                        setCameraButtonLoading(false)
-                    });
-    
-                });
-                taskPutfileStorage.catch((error) => {
-                    console.log("Firestore storage upload error #1:",error);
+              
+            // If image asset was chosen then upload to Firebase Storage
+            uploadImageFile(response.assets![0])
+            .then((url) => {
+                
+                if(!url){
+                    setCameraButtonLoading(false)
+                    return
+                }
+                // Add "Image chat message" with image url returned from uploadImageFile.
+                addChatMessage(roomId, 'image', userCred, url)
+                .then(() => {
+                    console.log('Chat message added!');
+                    updateChatroom(roomId)
                     setCameraButtonLoading(false)
                 })
-            
-            } catch (error) {
-                console.log("Firestore storage upload error #2:",error);
+                .catch((error) => {
+                    console.log("Firestore database add image chat message error:",error);
+                    Alert.alert("Error adding chat message...")
+                    setCameraButtonLoading(false)
+                });
+
+            })
+            .catch(() => {
+                Alert.alert("Error adding chat message...")
                 setCameraButtonLoading(false)
-            } 
-
-           
-            
-
+            });
 
         });
 
     }
 
+    // Open image picker to take image with phone camera
     const pickImageFromCamera = async () => {
         
           ImagePicker.launchCamera({
@@ -255,56 +193,39 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             includeBase64: false,
           }, async (response) => {
 
+            // If no image was chosen then return and stop loading animation for camera button.
             if(!response.assets){
                 console.log("Imagepicker CAMERA closed again...no image chosen")
                 setCameraButtonLoading(false)
                 return
             }
-
-            // Because selection limit is set to 1, we only check first item in the assets array returned.
-            console.log(response.assets![0])
-            //response.assets ? setResponseGallery(response.assets![0]) : 
             
-            try {
+           // If image asset was taken then upload to Firebase Storage
+           uploadImageFile(response.assets![0])
+           .then((url) => {
+               
+               if(!url){
+                   setCameraButtonLoading(false)
+                   return
+               }
+               // Add "Image chat message" with image url returned from uploadImageFile.
+               addChatMessage(roomId, 'image', userCred, url)
+               .then(() => {
+                   console.log('Chat message added!');
+                   updateChatroom(roomId)
+                   setCameraButtonLoading(false)
+               })
+               .catch((error) => {
+                   console.log("Firestore database add image chat message error:",error);
+                   Alert.alert("Error adding chat message...")
+                   setCameraButtonLoading(false)
+               });
 
-                const refFileName = '/chat_media/'+response.assets![0].fileName;
-                const refPutFileStorage = storage().ref(refFileName);
-                const taskPutfileStorage = refPutFileStorage.putFile(response.assets![0].uri as string);
-                taskPutfileStorage.then(async () => {
-                    const url = await storage().ref(refFileName).getDownloadURL();
-                    console.log('Image uploaded to the bucket!', url);
-
-                    firestore()
-                    .collection('chatmessages')
-                    .add({
-                        chatroom_id: roomId,
-                        msg_text: 'image',
-                        msg_date: firestore.FieldValue.serverTimestamp(),
-                        msg_image_url: url,
-                        sender_id: userCred.uid,
-                        sender_name: userCred.name ? userCred.name : userCred.email,
-                        sender_avatar: userCred.avatar_url ? userCred.avatar_url : '',
-                    })
-                    .then(() => {
-                        console.log('Chat message added!');
-                        updateChatroom()
-                        setCameraButtonLoading(false)
-                    })
-                    .catch((error) => {
-                        console.log("Firestore database add image chat message error:",error);
-                        setCameraButtonLoading(false)
-                    });
-
-                });
-                taskPutfileStorage.catch((error) => {
-                    console.log("Firestore storage upload error #1:",error);
-                    setCameraButtonLoading(false)
-                })
-            
-            } catch (error) {
-                console.log("Firestore storage upload error #2:",error);
-                setCameraButtonLoading(false)
-            } 
+           })
+           .catch(() => {
+               Alert.alert("Error adding chat message...")
+               setCameraButtonLoading(false)
+           });
 
         });
 
@@ -349,15 +270,14 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     onEndReached={getMoreMessages}
                     onScroll={e => {
                         scrollOffset = e.nativeEvent.contentOffset.y;
-                        //console.log({scrollOffset})
                       }}
                     renderItem={({item}) => 
                         <ChatMsgListItem 
-                            item={item} 
-                            currentUser={item.sender_id == userCred.uid ? true : false}
+                            item={item.data} 
+                            currentUser={item.data.sender_id == userCred.uid ? true : false}
                             imageOnPress={()=>{
                                 navigation.navigate('ImageFullsize', {
-                                    image_url: item.msg_image_url,
+                                    image_url: item.data.msg_image_url,
                                 });            
                             }} 
                         />}

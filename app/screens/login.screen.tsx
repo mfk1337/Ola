@@ -1,16 +1,15 @@
 import React, { useRef, useState } from "react";
-import { Alert, Button, Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Alert, Image, SafeAreaView, TextInput, View } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import { BasicButton } from "../components/basic-button";
 
-import auth from '@react-native-firebase/auth';
 import { formInputValidation } from "../libs/form-validation";
 import { Loading } from "../components/loading-overlay";
 
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
 import { Colors } from "../assets/styles/colors";
 
-import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
+import { signInFirebaseEmailPassword, signInFirebaseFacebook, signInFirebaseGoogleSignin } from "../services/firebase/auth.service";
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
@@ -24,127 +23,75 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
     setLoading(true)
 
-    await GoogleSignin.configure({
-      webClientId: '627663599334-l2m77tbhh1p67j8d71p5ihpqk3fbeba0.apps.googleusercontent.com',
-    });
+    signInFirebaseGoogleSignin()
+    .then((response) => {
 
-    // Check if your device supports Google Play
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true })
-    .catch(error => {
-      setLoading(false)
-      console.log('1');
-      console.log(error);
-    });
-    // Get the users ID token
-    var idToken = ''
-    await GoogleSignin.signIn()
-    .then((userInfo) => {
-      console.log("idToken: "+ userInfo.idToken)
-      console.log({userInfo})
-      idToken = userInfo.idToken as string
-    })
-    .catch(error => {
-      setLoading(false)
-      console.log('2');
-      console.log(error);
-      return;
-    });
-
-    console.log('3');
-    // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-    // Sign-in the user with the credential
-    auth()
-    .signInWithCredential(googleCredential)
-    .then(() => {
-        console.log('User account signed in!');
+      if(response=="logged-in")
+      {
         setLoading(false)
         navigation.navigate('Rooms')
-    })
-    .catch(error => {
-
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        setLoading(false)
-        Alert.alert("SIGN_IN_CANCELLED");
       }
 
-      if (error.code === 'auth/email-already-in-use') {
+      if (response === 'auth/email-already-in-use') {
         Alert.alert("The email address is already in use!");
       }
 
-      if (error.code === 'auth/email-already-in-use') {
-        Alert.alert("The email address is already in use!");
-      }
-
-      if (error.code === 'auth/invalid-email') {
+      if (response === 'auth/invalid-email') {
         Alert.alert("The email address is invalid!");
       }
 
-      if (error.code === 'auth/invalid-credential') {
-        Alert.alert("The supplied auth credential is malformed or has expired.");
+      if (response === 'auth/wrong-password') {
+        Alert.alert("The password is invalid");
       }
 
-      if (error.code === 'auth/too-many-requests') {
+      if (response === 'auth/too-many-requests') {
         Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
       }
 
-      setLoading(false)
+      setLoading(false) 
 
-      console.log(error);
+    }).catch(error => {    
+      console.log("signInFirebaseGoogleSignin catch error:",error)
+      setLoading(false) 
     });
+    
 
   }
 
-  // onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))
   const handleSignInWithFacebook = async () => {
     
     setLoading(true)
     
-    // Attempt login with permissions
-    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-  
-    if (result.isCancelled) {
-      console.log("User cancelled the login process")
-      setLoading(false)
-      return
-    }
-  
-    // Once signed in, get the users AccesToken
-    const data = await AccessToken.getCurrentAccessToken();
-  
-    if (!data) {
-      Alert.alert("Something went wrong with Facebook signin");
-      setLoading(false)
-      return
-    }
-  
-    // Create a Firebase credential with the AccessToken
-    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+    signInFirebaseFacebook()
+    .then((response) => {
 
-    auth()
-    .signInWithCredential(facebookCredential).
-    then(() => {
-      console.log('User account signed in!');
-      setLoading(false)
-      navigation.navigate('Rooms')
-    })
-    .catch(error => {
+      if(response=="logged-in")
+      {
+        setLoading(false)
+        navigation.navigate('Rooms')
+      }
 
-      if (error.code === 'auth/email-already-in-use') {
+      if (response === 'auth/email-already-in-use') {
         Alert.alert("The email address is already in use!");
       }
 
-      if (error.code === 'auth/invalid-email') {
+      if (response === 'auth/invalid-email') {
         Alert.alert("The email address is invalid!");
       }
 
-      if (error.code === 'auth/too-many-requests') {
+      if (response === 'auth/wrong-password') {
+        Alert.alert("The password is invalid");
+      }
+
+      if (response === 'auth/too-many-requests') {
         Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
       }
 
-      setLoading(false)
-      console.log(error);
+      setLoading(false) 
+
+    }).catch(error => {    
+      console.log("signInFirebaseFacebook catch error:",error)
+      setLoading(false) 
     });
 
   }
@@ -171,36 +118,37 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
     setLoading(true)
 
-    auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(() => {
-        console.log('User account signed in!');
-        setLoading(false)
-        navigation.navigate('Rooms')
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        Alert.alert("The email address is already in use!");
-      }
+    signInFirebaseEmailPassword(email, password)
+    .then((response) => {
 
-      if (error.code === 'auth/invalid-email') {
-        Alert.alert("The email address is invalid!");
-      }
+        if(response=="logged-in")
+        {
+          setLoading(false)
+          navigation.navigate('Rooms')
+        }
 
-      if (error.code === 'auth/wrong-password') {
-        Alert.alert("The password is invalid");
-      }
+        if (response === 'auth/email-already-in-use') {
+          Alert.alert("The email address is already in use!");
+        }
+  
+        if (response === 'auth/invalid-email') {
+          Alert.alert("The email address is invalid!");
+        }
+  
+        if (response === 'auth/wrong-password') {
+          Alert.alert("The password is invalid");
+        }
+  
+        if (response === 'auth/too-many-requests') {
+          Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+        }
 
-      if (error.code === 'auth/too-many-requests') {
-        Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
-      }
+        setLoading(false) 
 
-      setLoading(false)
-
-      console.log(error);
+    }).catch(error => {    
+      console.log("signInFirebaseEmailPassword catch error:",error)
+      setLoading(false) 
     });
-
-
   }
 
 
@@ -224,7 +172,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={() => inputFieldRefPassword.current?.focus()}
             />
-            <TextInput
+        <TextInput
                 ref={inputFieldRefPassword}
                 style={sharedStyles.textInput}
                 placeholder='Password'
@@ -240,21 +188,22 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={handleSignIn}
             />
-          <BasicButton title="Login" onPress={handleSignIn} />        
+        <BasicButton title="Login" onPress={handleSignIn} />        
           
-          <BasicButton title="Sign in with Facebook" onPress={handleSignInWithFacebook} style={{marginTop:10}}/>
+        <BasicButton title="Sign in with Facebook" onPress={handleSignInWithFacebook} style={{marginTop:10}}/>
 
-          <View style={{alignItems:"center"}}>
-            <GoogleSigninButton
-              style={{ width: 192, height: 48, marginTop:5}}
-              size={GoogleSigninButton.Size.Wide}
-              color={GoogleSigninButton.Color.Light}
-              onPress={handleSignInWithGoogle}
-              disabled={loading}
-            />
-          </View>
-
+        <View style={{alignItems:"center"}}>
+          <GoogleSigninButton
+            style={{ width: 192, height: 48, marginTop:5}}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Light}
+            onPress={handleSignInWithGoogle}
+            disabled={loading}
+          />
         </View>
+
+      </View>
+
         { loading ? (<Loading />):(null)}
     </SafeAreaView>
     

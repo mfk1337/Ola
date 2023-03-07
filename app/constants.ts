@@ -1,5 +1,2 @@
-// Google sign-in IOS Client ID
-export const GOOGLESIGNIN_IOS_CLIENTID = '';
-
-// Google sign-in IOS Client ID
-export const GOOGLESIGNIN_ANDROID_CLIENTID = '';
+// Google sign-in IOS/Android Client ID
+export const GOOGLESIGNIN_CLIENTID = '627663599334-l2m77tbhh1p67j8d71p5ihpqk3fbeba0.apps.googleusercontent.com';
