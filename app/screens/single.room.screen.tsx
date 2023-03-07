@@ -14,7 +14,7 @@ import { CustomNav } from "../components/custom-nav";
 import { UserContext } from "../context/auth.context";
 import { addChatMessage, ChatMessages, ChatMessagesAndLastpointer, getChatMessages, getMoreChatMessages, updateChatroom } from "../services/firebase/database.service";
 
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -27,7 +27,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     const [loading, setLoading] = useState(false); 
     const [msgs, setMsgs] = useState<ChatMessages[]>([]); 
     const [chatMsg, setChatMsg] = useState('');
-    const [lastMsgPointer, setLastMsgPointer] = useState();
+    const [lastMsgPointer, setLastMsgPointer] = useState<FirebaseFirestoreTypes.DocumentData>();
 
     const [cameraButtonLoading, setCameraButtonLoading] = useState(false); 
     const [msgSendButtonLoading, setMsgSendButtonLoading] = useState(false); 
@@ -37,7 +37,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     var scrollOffset = 0
 
-  useEffect(() => {
+    useEffect(() => {
                  
         const onQueryError = (error: any) => {
             console.log("Firestore database get chat messages onQueryError:",error);
@@ -52,16 +52,13 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         .limit(50)
         .onSnapshot(querySnapshot => {
             
-            const msgs = [];                       
+            const msgs: ChatMessages[] = [];                       
 
-            querySnapshot.forEach(documentSnapshot => {
-                
+            querySnapshot.forEach(documentSnapshot => {                
                 msgs.push({
                 data: documentSnapshot.data(),
                 key: documentSnapshot.id,
-                });
-                
-
+                });             
             });     
 
             setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
