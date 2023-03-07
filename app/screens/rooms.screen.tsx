@@ -1,18 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Button, SafeAreaView, StyleSheet, Text } from "react-native";
-import { sharedStyles } from "../assets/styles/shared.styles";
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { Loading } from "../components/loading-overlay";
-import { BasicList } from "../components/basic-list";
-import { BasicListItem } from "../components/items/basic-list-item";
-import { Colors } from "../assets/styles/colors";
-import { CustomNav } from "../components/custom-nav";
+import { Alert, SafeAreaView, StyleSheet } from "react-native";
+
+import { sharedStyles, Colors } from "../assets/styles";
+import { Loading, BasicList, BasicListItem, CustomNav, NoFrameButton } from "../components";
+
 import { UserContext } from "../context/auth.context";
 import { getChatRoomList, ChatRooms } from "../services/firebase/database.service";
 import { signOutFirebase } from "../services/firebase/auth.service";
-import { NoFrameButton } from "../components/noframe-button";
-
 
 export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
 

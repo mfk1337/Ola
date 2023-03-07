@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { ImageZoom } from '@likashefqet/react-native-image-zoom'; // https://github.com/likashefqet/react-native-image-zoom
-import { TopModalButton } from "../components/top-modal-button";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
+import { TopModalButton } from "../components";
+import { Colors } from "../assets/styles";
 
 export const ImageFullsizeScreen = ({route,navigation}: {route: any,navigation: any}) => {
 

@@ -1,19 +1,13 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View, Alert } from "react-native";
-import { sharedStyles } from "../assets/styles/shared.styles";
-import { SubHeader } from "../components/headers";
-import { Loading } from "../components/loading-overlay";
-import { Colors } from "../assets/styles/colors";
-import { BasicList } from "../components/basic-list";
-import { ChatMsgListItem } from "../components/items/chat-msg-list-item";
-import { BasicButton } from "../components/basic-button";
-import { IconButton } from "../components/icon-button";
 import * as ImagePicker from 'react-native-image-picker';
-import { CustomNav } from "../components/custom-nav";
+
+import { sharedStyles, Colors } from "../assets/styles";
+import { Loading, SubHeader, BasicList, ChatMsgListItem, BasicButton, IconButton, CustomNav } from "../components";
+
 import { UserContext } from "../context/auth.context";
 import { addChatMessage, ChatMessages, getMoreChatMessages, updateChatroom } from "../services/firebase/database.service";
-
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { uploadImageFile } from "../services/firebase/storage.service";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {

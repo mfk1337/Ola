@@ -1,15 +1,11 @@
 import React, { useRef, useState } from "react";
 import { Alert, Image, SafeAreaView, TextInput, View } from "react-native";
-import { sharedStyles } from "../assets/styles/shared.styles";
-import { BasicButton } from "../components/basic-button";
-
-import { formInputValidation } from "../libs/form-validation";
-import { Loading } from "../components/loading-overlay";
-
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
-import { Colors } from "../assets/styles/colors";
 
+import { sharedStyles, Colors } from "../assets/styles";
+import { BasicButton, Loading } from "../components";
 import { signInFirebaseEmailPassword, signInFirebaseFacebook, signInFirebaseGoogleSignin } from "../services/firebase/auth.service";
+import { formInputValidation } from "../libs/form-validation";
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
