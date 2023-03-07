@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, SafeAreaView, StyleSheet, Text } from "react-native";
+import { Alert, Button, SafeAreaView, StyleSheet, Text } from "react-native";
 import { sharedStyles } from "../assets/styles/shared.styles";
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -9,6 +9,7 @@ import { BasicListItem } from "../components/items/basic-list-item";
 import { Colors } from "../assets/styles/colors";
 import { CustomNav } from "../components/custom-nav";
 import { UserContext } from "../context/auth.context";
+import { getChatRoomList, ChatRooms } from "../services/firebase/database.service";
 
 
 export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
@@ -18,51 +19,46 @@ export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) =>
 
   const [loading, setLoading] = useState(true); 
   const [refreshingList, setRefreshingList] = useState(false); 
-  const [chatrooms, setChatrooms] = useState([]); 
+  const [chatrooms, setChatrooms] = useState<ChatRooms[]>([]); 
 
   useEffect(() => {
-    getChatRoomList()
+
+    getChatRoomList().then((chatrooms)=>{
+      setChatrooms(chatrooms)
+      setLoading(false)
+    }).catch(error => {
+      console.log('error', error);
+      Alert.alert("Error getting chat rooms...")
+      setLoading(false);
+    });
+
   }, [route.params?.refreshRoomList]);
 
   const refreshChatroomList = () => {
 
     console.log("Refreshing list...")
     setRefreshingList(true)
-    getChatRoomList()
-    setRefreshingList(false)
+    getChatRoomList().then((chatrooms)=>{
+      setChatrooms(chatrooms)
+      setRefreshingList(false)
+    }).catch(error => {
+      console.log('error', error);
+      Alert.alert("Error getting chat rooms...")
+      setRefreshingList(false)
+    });   
 
   } 
   
-  const getChatRoomList = () => {
 
-    const subscriber = firestore()
-    .collection('chatrooms')
-    .orderBy('new_msg_date', 'desc')
-    .get()
-    .then(querySnapshot => {
-      const chatrooms = [];
-
-      querySnapshot.forEach(documentSnapshot => {
-          chatrooms.push({
-          ...documentSnapshot.data(),
-          key: documentSnapshot.id,
-        });
-      });
-      console.log("Got chatroom list...")
-      setLoading(false)
-      setChatrooms(chatrooms);
-    });
-
-  }
 
   return(
       <SafeAreaView style={[sharedStyles.container]}>
           <CustomNav title='Chat rooms' />
           
-          <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item} onPress={()=>{                            
+          <BasicList style={styles.basicListStyle} data={chatrooms} renderItem={({item}) => <BasicListItem item={item.data} onPress={()=>{                            
             navigation.navigate('SingleRoom', {
-              roomName: item.name,
-              roomDesc: item.desc,
+              roomName: item.data.name,
+              roomDesc: item.data.desc,
               roomId: item.key
             });
           }} />}
