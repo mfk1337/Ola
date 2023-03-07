@@ -80,7 +80,7 @@ export const updateChatroom = async (roomId: string) => {
     });
 }
 
-// Get chatroom messages
+// UNDER CONSTRUCTION - Get chatroom messages
 export const getChatMessages = async (roomId: string): Promise<ChatMessagesAndLastpointer> => {
 
     console.log("Getting MORE chat messages...")
@@ -92,7 +92,7 @@ export const getChatMessages = async (roomId: string): Promise<ChatMessagesAndLa
 
     try {
         // Get Documents from 'chatmessages' collection.
-        await firestore()
+        firestore()
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)
         .orderBy('msg_date','desc')

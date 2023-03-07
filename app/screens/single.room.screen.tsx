@@ -37,60 +37,43 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     var scrollOffset = 0
 
-    const getLOL = () => {
-        
-        console.log("Getting MORE chat messages...")
+  useEffect(() => {
+                 
+        const onQueryError = (error: any) => {
+            console.log("Firestore database get chat messages onQueryError:",error);
+        }          
 
-        // Chatrooms array to collect firebase Documents.
-        const msgs: ChatMessages[] = [];
-        var lastPointer: any
-        var chatMessagesAndLastpointer: ChatMessagesAndLastpointer
+        console.log("Getting new messages...")  
 
-        firestore()
+        const subscriber = firestore()
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)
         .orderBy('msg_date','desc')
         .limit(50)
         .onSnapshot(querySnapshot => {
             
-            querySnapshot.forEach(documentSnapshot => {                
+            const msgs = [];                       
+
+            querySnapshot.forEach(documentSnapshot => {
+                
                 msgs.push({
                 data: documentSnapshot.data(),
                 key: documentSnapshot.id,
-                });      
+                });
+                
+
             });     
-            lastPointer = querySnapshot.docs[querySnapshot.docs.length - 1]
-            console.log("Got chat messages...")                                     
-            
-        }); 
 
+            setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
 
-    }
+            if(!msgs.length) setEmptyErrMsg('Be the first to send a message...'); 
 
-    useEffect(() => {
-        
-        
-        getLOL()
+            setMsgs(msgs)                       
 
-        /*
-        getChatMessages(roomId)
-        .then(moreChatmessages => {
-           
-            setLastMsgPointer(moreChatmessages.lastpointer)
-
-            if(!moreChatmessages.chatmessages.length) setEmptyErrMsg('Be the first to send a message...'); 
-
-            setMsgs(moreChatmessages.chatmessages)
-
-        })
-        .catch((error) => {
-            Alert.alert("Error getting chatmessages...")
-            console.log("Firestore database get more chat messages error:",error);
-        }); */
-             
+        }, onQueryError);        
 
         // Unsubscribe from events when no longer in use
-        return () => getLOL();
+        return () => subscriber();
     }, []);
     
 
