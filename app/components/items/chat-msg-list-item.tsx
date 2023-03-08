@@ -1,3 +1,9 @@
+/**
+ * Chatmessage list item for Flatlist (See also Basiclist)
+ * Desc: Custom flatlist item with styling for chat messasges/bubbles
+ * 2 types of chat bubbles, green and gray. The green one is for current user and the gray one is for 'other user'
+ */
+
 import React from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import { fontStyles, Colors} from '../../assets/styles';
@@ -14,6 +20,10 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
 
     const { item, currentUser, onPress, imageOnPress } = props;
 
+    const defaultAvatar = '../../assets/img/default-avatar.jpg';
+    const defaultNoName = 'NoName';
+
+    // Convert timestamp from Firestore with Moment
     var msgDateTime = ''
     if(item.msg_date){
         var msgDate = new Date(item.msg_date.toDate())
@@ -25,41 +35,54 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
     return(
         <View style={{alignItems:currentUser ? 'flex-end': 'flex-start'}}>
             
+
             {currentUser ? (
                 <View style={{alignItems: 'flex-end'}}>
                     <View style={{flexDirection: 'row'}}>
                         <View style={styles.chatBubbleGreen}>                              
                                 {
+                                    // If message is of type image and image url is present, then show image in chat bubble.
                                     item.msg_image_url ? (
                                         <TouchableOpacity onPress={imageOnPress}>
                                         <Image style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
                                         </TouchableOpacity>
-                                    ):(
+                                    ):( // Show normal chat bubble if no image
                                         <Text style={styles.chatBubbleGreenText}>{item.msg_text}</Text>
                                     )
                                 }                                                 
                         </View> 
-                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require('../../assets/img/default-avatar.jpg')} style={styles.chatBubbleGreenAvatar}/>   
+
+                        {/* User avatar image, if no image show default avatar */}
+                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGreenAvatar}/>   
+
                     </View>
-                    <Text style={styles.chatBubbleGreenSmallTxt}>{item.sender_name ? item.sender_name : 'NoName'} - {msgDateTime}</Text>          
+
+                    {/* Chat message stamp: User name, chatmsg time/date */}
+                    <Text style={styles.chatBubbleGreenSmallTxt}>{item.sender_name ? item.sender_name : defaultNoName} - {msgDateTime}</Text>          
                 </View>
             ):(
                 <View style={{alignItems: 'flex-start'}}>
                      <View style={{flexDirection: 'row'}}>
-                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require('../../assets/img/default-avatar.jpg')} style={styles.chatBubbleGrayAvatar}/>   
+
+                        {/* User avatar image, if no image show default avatar */}
+                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGrayAvatar}/>   
+
                         <View style={styles.chatBubbleGray}>                              
                                 {
+                                    // If message is of type image and image url is present, then show image in chat bubble.
                                     item.msg_image_url ? (
                                         <TouchableOpacity onPress={imageOnPress}>
                                         <Image style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
                                         </TouchableOpacity>
-                                    ):(
+                                    ):( // Show normal chat bubble if no image
                                         <Text style={styles.chatBubbleGrayText}>{item.msg_text}</Text>
                                     )
                                 }                 
                         </View> 
                     </View>
-                    <Text style={styles.chatBubbleGraySmallTxt}>{item.sender_name ? item.sender_name : 'NoName'} - {msgDateTime}</Text>          
+
+                    {/* Chat message stamp: User name, chatmsg time/date */}
+                    <Text style={styles.chatBubbleGraySmallTxt}>{item.sender_name ? item.sender_name : defaultNoName} - {msgDateTime}</Text>          
                 </View> 
             )}
                  

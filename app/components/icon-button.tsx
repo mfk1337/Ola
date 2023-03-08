@@ -1,3 +1,8 @@
+/**
+ * Icon button for this app
+ * Desc: Custom Button with icon only and background.
+ */
+
 import React from "react";
 import { ActivityIndicator, StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";

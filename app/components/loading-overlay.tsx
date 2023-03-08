@@ -1,3 +1,8 @@
+/**
+ * Black overlay loader
+ * Desc: Loader with ActivityIndicator in middle and black background with opacity.
+ */
+
 import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { Colors } from '../assets/styles/colors';
