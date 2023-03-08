@@ -11,14 +11,39 @@ import SplashScreen from 'react-native-splash-screen'
 import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 import auth from '@react-native-firebase/auth';
 import { UserContext, UserCredentials } from './context/auth.context';
+import { Alert, PermissionsAndroid, Platform } from 'react-native';
+
+import messaging from '@react-native-firebase/messaging';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
 
+  const getFCMToken = async () =>{
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    console.log({token})
+    // More here:https://dev.to/ahsan131hub/react-native-fire-base-push-notification-using-topics-2fnf
+  }
+
   useEffect(() => {
     SplashScreen.hide()
-  });
+    
+    if(Platform.OS === 'android')
+    { 
+        
+        console.log("Requesting noti perm for android")
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        getFCMToken()
+       
+    }
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
 
   // Set init UserCredentials, basically no one is logged in.
   const [userCred, setUserCreds] = useState<UserCredentials>({
