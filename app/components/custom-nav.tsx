@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { makeMutable } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/Ionicons";
-import { Colors } from "../assets/styles/colors";
-import { fontStyles } from "../assets/styles/fonts";
+import { Colors, fontStyles } from "../assets/styles";
 
 interface CustomNavProps {
     title: string;

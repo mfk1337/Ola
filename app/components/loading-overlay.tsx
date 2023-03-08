@@ -2,17 +2,19 @@ import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { Colors } from '../assets/styles/colors';
 
-export const Loading = () => {
- 
+export const Loading = () => { 
   return (
-    <View
-      style={{
-        ...StyleSheet.absoluteFillObject,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#00000050'
-      }}>
+    <View style={styles.overlayContainer}>
       <ActivityIndicator size="large" color={Colors.white} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overlayContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00000050'      
+  },
+});

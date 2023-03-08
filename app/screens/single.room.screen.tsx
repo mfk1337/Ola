@@ -39,7 +39,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
         console.log("Getting new messages...")  
 
-        // TODO, put in services.
+        // TODO, put in services. (Having lots of issues doing so)
         const subscriber = firestore()
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)

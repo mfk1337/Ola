@@ -1,12 +1,10 @@
 import React from "react";
-import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
-import { Colors } from "../assets/styles/colors";
-import { fontStyles } from "../assets/styles/fonts";
+import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
+import { Colors, fontStyles } from "../assets/styles";
 
 interface TopModalButtonProps {
     style?: StyleProp<ViewStyle>;
     title: string;
-    color?: string;
     disabled?: boolean;
     loader?: boolean;
     onPress?: () => void;
@@ -14,7 +12,7 @@ interface TopModalButtonProps {
 
 
 export const TopModalButton: React.FC<TopModalButtonProps> = props => {
-    const { style, title, color, disabled, loader,  onPress } = props;
+    const { style, title, disabled, loader,  onPress } = props;
     return (
         <TouchableOpacity
                 disabled={disabled}

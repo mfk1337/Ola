@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ViewStyle, StyleProp, FlatList, ListRenderItem, RefreshControl} from 'react-native';
+import { View, ViewStyle, StyleProp, FlatList, ListRenderItem } from 'react-native';
 
 interface BasicListProps {
     style?: StyleProp<ViewStyle>;

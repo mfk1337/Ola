@@ -19,7 +19,7 @@ export interface ChatMessages {
 
 export interface ChatMessagesAndLastpointer {
     chatmessages: ChatMessages[];
-    lastpointer: undefined;
+    lastpointer: FirebaseFirestoreTypes.DocumentData;
 }
 
 /**
