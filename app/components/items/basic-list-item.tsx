@@ -29,6 +29,7 @@ export const BasicListItem: React.FC<BasicListItemProps> = props => {
     )
 }
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
    
     listItemContainer: {

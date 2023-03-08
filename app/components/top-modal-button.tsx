@@ -27,6 +27,7 @@ export const TopModalButton: React.FC<TopModalButtonProps> = props => {
     );
 };
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
     buttonContainer: {
         borderBottomColor: Colors.lightGreen,

@@ -27,6 +27,7 @@ export const BasicButton: React.FC<BasicButtonProps> = props => {
     );
 };
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
     buttonContainer: {
         borderWidth: 1,

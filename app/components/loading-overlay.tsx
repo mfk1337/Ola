@@ -10,6 +10,7 @@ export const Loading = () => {
   );
 };
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,

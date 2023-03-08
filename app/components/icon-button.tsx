@@ -30,6 +30,7 @@ export const IconButton: React.FC<IconButtonProps> = props => {
     );
 };
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
     iconButtonContainer: {
         borderWidth: 1,

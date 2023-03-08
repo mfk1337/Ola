@@ -28,6 +28,7 @@ export const NoFrameButton: React.FC<NoFrameButtonProps> = props => {
     );
 };
 
+// Local stylesheet for this component
 const styles = StyleSheet.create({
     buttonContainer: {
         alignItems:"center",
