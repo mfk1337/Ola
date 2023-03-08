@@ -1,6 +1,7 @@
 /**
  * Ola - Chat App
  * https://github.com/mfk1337/Ola
+ * This is here where the magic starts
  */
 
 import React, { useEffect, useState } from 'react';
@@ -15,14 +16,15 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
 
+  useEffect(() => {
+    SplashScreen.hide()
+  });
+
+  // Set init UserCredentials, basically no one is logged in.
   const [userCred, setUserCreds] = useState<UserCredentials>({
     uid: 'unknown',
     email: 'unknown'
   })
-
-  useEffect(() => {
-    SplashScreen.hide()
-  });
 
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
@@ -31,6 +33,7 @@ const App = () => {
   // Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
     setLoggedInUser(loggedInUser);
+    console.log({loggedInUser})
     if(loggedInUser){
       setUserCreds({
         uid: loggedInUser.uid,
@@ -38,16 +41,16 @@ const App = () => {
         avatar_url: loggedInUser.photoURL ? loggedInUser.photoURL : '',
         email: loggedInUser.email,
     })
-    }
+    }    
     
-    
-      if (initializing) setInitializing(false);
+    if (initializing) setInitializing(false);
   }
 
   useEffect(() => {
+    // Firebase auth listener for user state changes, logged-in or logged-out
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     console.log("onAuthStateChanged",loggedInUser)
-    return subscriber; // unsubscribe on unmount
+    return subscriber; // unsubscribe the listener on unmount
   }, []);
 
   if (initializing) return null;

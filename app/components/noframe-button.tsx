@@ -1,3 +1,8 @@
+/**
+ * NoFrame button for this app
+ * Desc: Custom Button with styling, no background and loader.
+ */
+
 import React from "react";
 import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import { Colors, fontStyles } from "../assets/styles";

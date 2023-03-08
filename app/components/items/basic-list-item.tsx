@@ -1,3 +1,8 @@
+/**
+ * Basic list item for Flatlist (See also Basiclist)
+ * Desc: Custom flatlist item with styling
+ */
+
 import React from 'react';
 import { Text, View, TouchableHighlight, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';

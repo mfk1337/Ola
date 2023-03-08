@@ -1,6 +1,10 @@
+/**
+ * Image fullsize screen
+ * Desc: For showing image in full screen with zoom.
+ */
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { ImageZoom } from '@likashefqet/react-native-image-zoom'; // https://github.com/likashefqet/react-native-image-zoom
+import { ImageZoom } from '@likashefqet/react-native-image-zoom'; // Imagezoom: https://github.com/likashefqet/react-native-image-zoom
 
 import { TopModalButton } from "../components";
 import { Colors } from "../assets/styles";

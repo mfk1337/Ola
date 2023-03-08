@@ -1,3 +1,8 @@
+/**
+ * Text headers
+ * Desc: Custom text headers for titles, headlines etc.
+ */
+
 import React from "react";
 import { StyleProp, StyleSheet, Text, View } from "react-native";
 import { Colors, fontStyles } from "../assets/styles";

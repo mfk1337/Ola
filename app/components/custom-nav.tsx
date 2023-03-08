@@ -1,3 +1,8 @@
+/**
+ * Custom navigation header 
+ * Desc: Basically a view with left and right butten options and header in middle. Has fixed height.
+ */
+
 import React from "react";
 import { StyleProp, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";

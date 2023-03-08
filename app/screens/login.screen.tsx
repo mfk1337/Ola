@@ -1,3 +1,8 @@
+/**
+ * Login screen
+ * Desc:  Main "entry" for the Ola chat app, the login screen
+ */
+
 import React, { useRef, useState } from "react";
 import { Alert, Image, SafeAreaView, StyleSheet, TextInput, View } from "react-native";
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
@@ -9,25 +14,33 @@ import { formInputValidation } from "../libs/form-validation";
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 
+  // State for inputfield Email
   const [email, setEmail] = useState('');
+  // State for inputfield Password
   const [password, setPassword] = useState('');
-
+  // State for loader overlay
   const [loading, setLoading] = useState(false);
-  const inputFieldRefPassword = useRef<TextInput | null>(null); // Reference to the Password TextInput
+  // Ref for inputfield Password, used to go directly from keyboard Go to password field from Email field.
+  const inputFieldRefPassword = useRef<TextInput | null>(null);
 
+
+  // Handle Google SignIn
   const handleSignInWithGoogle = async () => {
 
     setLoading(true)
 
+    // Call Firebase auth service function from Services library/folder
     signInFirebaseGoogleSignin()
     .then((response) => {
 
+      // If logged in is succes go Room screen, even tho its handle in App.tsx also.
       if(response=="logged-in")
       {
         setLoading(false)
         navigation.navigate('Rooms')
       }
 
+      // Handle error messages and show to user
       if (response === 'auth/email-already-in-use') {
         Alert.alert("The email address is already in use!");
       }
@@ -54,19 +67,23 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
   }
 
+  // Handle Facebook SignIn
   const handleSignInWithFacebook = async () => {
     
     setLoading(true)
     
+    // Call Firebase auth service function from Services library/folder
     signInFirebaseFacebook()
     .then((response) => {
 
+      // If logged in is succes go Room screen, even tho its handle in App.tsx also.
       if(response=="logged-in")
       {
         setLoading(false)
         navigation.navigate('Rooms')
       }
 
+      // Handle error messages and show to user
       if (response === 'auth/email-already-in-use') {
         Alert.alert("The email address is already in use!");
       }
@@ -91,9 +108,11 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     });
 
   }
-  
+
+  // Handle sign in with email and password
   const handleSignIn = async () => {
 
+    // Basic validation of the 2 inputfields
     if(!formInputValidation([    
       {
           fieldname: 'E-mail',
@@ -114,15 +133,18 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
     setLoading(true)
 
+     // Call Firebase auth service function from Services library/folder
     signInFirebaseEmailPassword(email, password)
     .then((response) => {
 
+        // If logged in is succes go Room screen, even tho its handle in App.tsx also.
         if(response=="logged-in")
         {
           setLoading(false)
           navigation.navigate('Rooms')
         }
 
+        // Handle error messages and show to user
         if (response === 'auth/email-already-in-use') {
           Alert.alert("The email address is already in use!");
         }
@@ -200,7 +222,8 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
       </View>
 
-        { loading ? (<Loading />):(null)}
+        { // Loader overlay
+        loading ? (<Loading />):(null)}
     </SafeAreaView>
     
   )

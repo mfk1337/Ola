@@ -1,3 +1,8 @@
+/**
+ * Basic list 
+ * Desc: Custom flatlist
+ */
+
 import React from 'react';
 import { View, ViewStyle, StyleProp, FlatList, ListRenderItem } from 'react-native';
 

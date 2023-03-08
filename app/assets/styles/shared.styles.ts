@@ -1,4 +1,8 @@
-import { StyleSheet, Platform } from 'react-native';
+/**
+ * Default styles to use throughout the app
+ */
+
+import { StyleSheet } from 'react-native';
 import { Colors } from './colors';
 import { fontStyles } from './fonts';
 

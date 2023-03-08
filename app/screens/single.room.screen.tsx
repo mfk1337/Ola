@@ -1,3 +1,8 @@
+/**
+ * Single chatroom screen
+ * Desc: Show latest chatmessages in the chatroom
+ */
+
 import React, { useEffect, useState, useRef, useContext } from "react";
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View, Alert } from "react-native";
@@ -12,27 +17,35 @@ import { uploadImageFile } from "../services/firebase/storage.service";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
-    const userCred = useContext(UserContext);
-    
-    const { roomName, roomDesc, roomId } = route.params;
-   
-    const [emptyErrMsg, setEmptyErrMsg] = useState("Loading messages..."); 
-
+    // Get user credentials from auth context.
+    const userCred = useContext(UserContext);    
+    // Params received from chatroom list, data specific for this room.
+    const { roomName, roomDesc, roomId } = route.params;   
+    // Initial message
+    const [emptyErrMsg, setEmptyErrMsg] = useState("Loading messages...");     
+    // State for loader overlay
     const [loading, setLoading] = useState(false); 
+    // The main chatmessage array state 
     const [msgs, setMsgs] = useState<ChatMessages[]>([]); 
+    // State for new chatmessage inputfield
     const [chatMsg, setChatMsg] = useState('');
+    // Last document pointer state for infinit scroll function.
     const [lastMsgPointer, setLastMsgPointer] = useState<FirebaseFirestoreTypes.DocumentData>();
-
+    // States used for un button loaders
     const [cameraButtonLoading, setCameraButtonLoading] = useState(false); 
     const [msgSendButtonLoading, setMsgSendButtonLoading] = useState(false); 
-
+    // Ref for main flatlist, for auto scrolling
     const chatFlatlistRef = useRef<FlatList | null>(null);
+    // Ref for chatmessage inputfield, mainly used to set focus after send message.
     const chatTextInput = useRef<TextInput | null>(null);
-
+    // Saves the current scroll position, used for auto scrolling with infinit scroll.
     var scrollOffset = 0
 
-    useEffect(() => {
-                 
+    useEffect(() => {        
+        
+        // START - Firestore active listener to check for changes in chatmessages in the specific chatroom.
+
+        // Chatmessages query error when getting new chatmessages
         const onQueryError = (error: any) => {
             console.log("Firestore database get chat messages onQueryError:",error);
         }          
@@ -40,6 +53,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         console.log("Getting new messages...")  
 
         // TODO, put in services. (Having lots of issues doing so)
+        // Get chatmessages
         const subscriber = firestore()
         .collection('chatmessages')
         .where("chatroom_id","==",roomId)
@@ -47,28 +61,32 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         .limit(50)
         .onSnapshot(querySnapshot => {
             
-            const msgs: ChatMessages[] = [];                       
-
-            querySnapshot.forEach(documentSnapshot => {                
+            // Put every message in ChatMessages array
+            const msgs: ChatMessages[] = [];            
+             querySnapshot.forEach(documentSnapshot => {                
                 msgs.push({
                 data: documentSnapshot.data(),
                 key: documentSnapshot.id,
                 });             
             });     
 
+            // Set last document pointer for infinit scroll function, used if there are more then 50 messages.
             setLastMsgPointer(querySnapshot.docs[querySnapshot.docs.length - 1])
 
+            // If no msg is present then show a message
             if(!msgs.length) setEmptyErrMsg('Be the first to send a message...'); 
 
+            // Set the main chatmessage array state with all the chatmessages just gotten.
             setMsgs(msgs)                       
 
         }, onQueryError);        
+        // END - Firestore active listener to check for changes in chatmessages in the specific chatroom.
 
         // Unsubscribe from events(Get new messages) when no longer in use
         return () => subscriber();
     }, []);
     
-
+    // Get more messages if there are more then 50, the infinit scroll function.
     const getMoreMessages = () => {
 
         if(msgs.length < 50) return        
@@ -81,13 +99,16 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
         getMoreChatMessages(roomId, lastMsgPointer)
         .then(moreChatmessages => {
-                 
+            
+            // Set the last document pointer for further infinit scroll.
             setLastMsgPointer(moreChatmessages.lastpointer)
+            // Added new messages to main chatmessages array
             setMsgs([...msgs, ...moreChatmessages.chatmessages])
 
             setLoading(false)
 
-            setTimeout(() => {                
+            setTimeout(() => {       
+                // Auto scroll a bit to show that new messages was loaded         
                 chatFlatlistRef.current?.scrollToOffset({offset: scrollOffset + 100, animated: true})  
             }, 100)    
 
@@ -99,7 +120,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     }
 
    
-
+    // Handle add/send new chatmessage
     const handleSendChatMsg = async () => {
         
         // If no chat msg, then do nothing.
@@ -107,9 +128,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
         setMsgSendButtonLoading(true)
 
+        // Add new chat message, call the Firebase service database service in Services/folder.
         addChatMessage(roomId,chatMsg, userCred)
         .then(() => {
             setMsgSendButtonLoading(false)
+            // Update the chatroom new_msg_date field with new timestamp
             updateChatroom(roomId)
         })
         .catch((error) => {
@@ -160,6 +183,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                 addChatMessage(roomId, 'image', userCred, url)
                 .then(() => {
                     console.log('Chat message added!');
+                    // Update the chatroom new_msg_date field with new timestamp
                     updateChatroom(roomId)
                     setCameraButtonLoading(false)
                 })
@@ -206,6 +230,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                addChatMessage(roomId, 'image', userCred, url)
                .then(() => {
                    console.log('Chat message added!');
+                   // Update the chatroom new_msg_date field with new timestamp
                    updateChatroom(roomId)
                    setCameraButtonLoading(false)
                })
@@ -225,6 +250,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     }
 
+    // Image media source chooser, gallery or camera.
     const chooseMediaSource = () => {
         setCameraButtonLoading(true)
         Alert.alert('Choose image source', '', [
@@ -251,11 +277,14 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             />      
             <SubHeader text={roomDesc} />           
 
+            {/* KeyboardAvoidingView used for pushing items up when keyboard is shown */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{flex: 1}}>
 
-                { msgs.length ? (                             
+                { 
+                // If main chatmessages array is not empty then show the flatlist of chatmessage items.
+                msgs.length ? (                             
                     <BasicList
                     refref={chatFlatlistRef} 
                     style={styles.basicListStyle}
@@ -276,12 +305,14 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                             }} 
                         />}
                     />  
-                ):(
+                ):( 
+                    // If no messages, show a "error" message.
                     <View style={styles.basicListStyle}>
                         <Text style={[sharedStyles.errorMsgGrey, styles.errorMsg]}>{emptyErrMsg}</Text>
                     </View>                  
                 )}
 
+                {/* Bottom area */}
                 <View style={styles.bottomItemsContainer}>
                     <IconButton icon='camera-outline' color="white" onPress={chooseMediaSource} loader={cameraButtonLoading} disabled={cameraButtonLoading}/> 
                     <TextInput 
@@ -300,7 +331,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
             </KeyboardAvoidingView>   
 
-        { loading ? (<Loading />):(null)}
+        { // Loader overlay
+        loading ? (<Loading />):(null)}
         </SafeAreaView>
         
     )
