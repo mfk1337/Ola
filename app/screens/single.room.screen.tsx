@@ -279,7 +279,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
             {/* KeyboardAvoidingView used for pushing items up when keyboard is shown */}
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={{flex: 1}}>
 
                 { 
