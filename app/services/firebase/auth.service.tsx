@@ -45,7 +45,7 @@ export const signInFirebaseEmailPassword = async (email: string, password: strin
                 console.log("Access to this account has been temporarily disabled due to many failed login attempts");
             }
             response = error.code
-            console.log(error);
+            console.log({error});
         });
 
         // Return login response

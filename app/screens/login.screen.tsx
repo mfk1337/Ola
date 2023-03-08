@@ -57,6 +57,10 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
         Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
       }
 
+      if (response === 'auth/network-request-failed') {
+        Alert.alert("Network error, no internet");
+      }
+
       setLoading(false) 
 
     }).catch(error => {    
@@ -98,6 +102,10 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
       if (response === 'auth/too-many-requests') {
         Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+      }
+
+      if (response === 'auth/network-request-failed') {
+        Alert.alert("Network error, no internet");
       }
 
       setLoading(false) 
@@ -159,6 +167,10 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   
         if (response === 'auth/too-many-requests') {
           Alert.alert("Access to this account has been temporarily disabled due to many failed login attempts");
+        }
+
+        if (response === 'auth/network-request-failed') {
+          Alert.alert("Network error, no internet");
         }
 
         setLoading(false) 
