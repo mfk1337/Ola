@@ -67,7 +67,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
     )
 }
 
-
+// Local stylesheet for this component
 const styles = StyleSheet.create({
    
     // Current user, right chat bubble styles

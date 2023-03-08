@@ -278,11 +278,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     />  
                 ):(
                     <View style={styles.basicListStyle}>
-                        <Text style={[sharedStyles.errorMsgGrey, {padding:120, textAlign: "center"}]}>{emptyErrMsg}</Text>
+                        <Text style={[sharedStyles.errorMsgGrey, styles.errorMsg]}>{emptyErrMsg}</Text>
                     </View>                  
                 )}
 
-                <View style={{flexDirection: 'row', padding:5, marginBottom:10}}>
+                <View style={styles.bottomItemsContainer}>
                     <IconButton icon='camera-outline' color="white" onPress={chooseMediaSource} loader={cameraButtonLoading} disabled={cameraButtonLoading}/> 
                     <TextInput 
                         placeholder='Type message...'
@@ -291,11 +291,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         returnKeyType="go"
                         enablesReturnKeyAutomatically={true}
                         onSubmitEditing={handleSendChatMsg}
-                        style={[sharedStyles.textInput,{flex:1, marginRight:10, marginLeft:10, height:40, padding:5}]}
+                        style={[sharedStyles.textInput,styles.msgInput]}
                         value={chatMsg}
                         onChangeText={text => setChatMsg(text)}
                         />
-                    <BasicButton title="SEND" style={{marginRight:10, height:40, width:70, paddingBottom:1}} loader={msgSendButtonLoading} disabled={msgSendButtonLoading} onPress={handleSendChatMsg} />
+                    <BasicButton title="SEND" style={styles.sendButton} loader={msgSendButtonLoading} disabled={msgSendButtonLoading} onPress={handleSendChatMsg} />
                 </View> 
 
             </KeyboardAvoidingView>   
@@ -314,4 +314,28 @@ const styles = StyleSheet.create({
         marginTop:0,
         backgroundColor: Colors.white
     },
+    sendButton: {
+        marginRight:10,
+        height:40,
+        width:70,
+        paddingBottom:1
+    },
+    msgInput: {
+        flex:1,
+        marginRight:10,
+        marginLeft:10,
+        height:40,
+        padding:5
+    },
+    bottomItemsContainer: {
+        flexDirection: 'row',
+        padding:5,
+        marginBottom:10
+    },
+
+    errorMsg: {
+        padding:120,
+        textAlign: "center"
+    }
+
 });

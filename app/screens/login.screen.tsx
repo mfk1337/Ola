@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Alert, Image, SafeAreaView, TextInput, View } from "react-native";
+import { Alert, Image, SafeAreaView, StyleSheet, TextInput, View } from "react-native";
 import { GoogleSigninButton } from '@react-native-google-signin/google-signin'; // https://github.com/react-native-google-signin/google-signin
 
 import { sharedStyles, Colors } from "../assets/styles";
@@ -151,8 +151,8 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   return(
     <SafeAreaView style={sharedStyles.container}>
                 
-      <View style={{marginHorizontal: 60, marginTop: 90, }}>
-        <Image source={require('../assets/img/app_logo.png')} style={{width:170, height:170, alignSelf: 'center'}}/>
+      <View style={styles.loginItemsContainer}>
+        <Image source={require('../assets/img/app_logo.png')} style={styles.appLogo}/>
         <TextInput
                 style={sharedStyles.textInput}
                 placeholder="E-mail"
@@ -190,7 +190,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
 
         <View style={{alignItems:"center"}}>
           <GoogleSigninButton
-            style={{ width: 192, height: 48, marginTop:5}}
+            style={styles.buttonGoogleSignin}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Light}
             onPress={handleSignInWithGoogle}
@@ -206,3 +206,22 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
   )
 
 }
+
+// Local stylesheet for this screen
+const styles = StyleSheet.create({
+    buttonGoogleSignin: {
+      width: 192, 
+      height: 48, 
+      marginTop:5        
+    },
+    appLogo: {
+      width:170,
+      height:170,
+      alignSelf: 'center'
+    },
+    loginItemsContainer: {
+      marginHorizontal: 60,
+      marginTop: 90, 
+    }
+    
+});
