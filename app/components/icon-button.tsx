@@ -1,8 +1,8 @@
 import React from "react";
-import { ActivityIndicator, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Colors } from "../assets/styles/colors";
-import { fontStyles } from "../assets/styles/fonts";
+
 
 interface IconButtonProps {
     style?: StyleProp<ViewStyle>;

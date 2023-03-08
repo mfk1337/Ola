@@ -1,7 +1,6 @@
 import React from "react";
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
-import { Colors } from "../assets/styles/colors";
-import { fontStyles } from "../assets/styles/fonts";
+import { StyleProp, StyleSheet, Text, View } from "react-native";
+import { Colors, fontStyles } from "../assets/styles";
 
 interface HeaderProps {
     style?: StyleProp<any>;
