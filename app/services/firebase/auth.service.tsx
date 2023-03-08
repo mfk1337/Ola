@@ -217,6 +217,7 @@ export const signOutFirebase = () => {
     auth()
     .signOut()
     .then(() => {
+        console.log('User signed off, going to login screen...');
         return true
     });
 }
