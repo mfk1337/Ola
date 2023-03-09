@@ -26,7 +26,6 @@ const App = () => {
     console.log('Message handled in the background!', remoteMessage);
   }); 
 
-
   useEffect(() => {
     SplashScreen.hide()
     
@@ -38,8 +37,7 @@ const App = () => {
         getFCMToken()
         
 
-    }
-    
+    }    
     // Push notifications: Handle noti from background state
     messaging().onNotificationOpenedApp(remoteMessage => {
       console.log("onNotificationOpenedApp - Deep link from noti:", remoteMessage.data?.link);
@@ -63,17 +61,17 @@ const App = () => {
     // END - Push notification testing
   }, []);
 
-  // Set init UserCredentials, basically no one is logged in.
+  // AUTH: Set init UserCredentials, basically no one is logged in.
   const [userCred, setUserCreds] = useState<UserCredentials>({
     uid: 'unknown',
     email: 'unknown'
   })
 
-  // Set an initializing state whilst Firebase connects
+  // AUTH: Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState();
 
-  // Handle user state changes
+  // AUTH: Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
     setLoggedInUser(loggedInUser);
     //console.log({loggedInUser})
@@ -90,7 +88,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    // Firebase auth listener for user state changes, logged-in or logged-out
+    // AUTH: Firebase auth listener for user state changes, logged-in or logged-out
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     console.log("onAuthStateChanged",loggedInUser)
     return subscriber; // unsubscribe the listener on unmount
