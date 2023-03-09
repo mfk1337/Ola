@@ -149,7 +149,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
         if(response=="logged-in")
         {
           setLoading(false)
-          navigation.navigate('Rooms')
+          //navigation.navigate('Rooms')
         }
 
         // Handle error messages and show to user

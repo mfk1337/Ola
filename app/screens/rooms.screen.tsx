@@ -17,7 +17,7 @@ export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) =>
 
   // Show logged in users credentials - For debug right now
   const userCred = useContext(UserContext);
-  console.log("Room, current user logged in:",userCred)
+  //console.log("Room, current user logged in:",userCred)
 
   // State for loader overlay
   const [loading, setLoading] = useState(true); 

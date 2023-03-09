@@ -14,35 +14,35 @@ import { UserContext, UserCredentials } from './context/auth.context';
 import { Alert, PermissionsAndroid, Platform } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
+import { getFCMToken, sendNotiMessage, subscribeTopic } from './services/firebase/noti.service';
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
 
-  const getFCMToken = async () =>{
-    await messaging().registerDeviceForRemoteMessages();
-    const token = await messaging().getToken();
-    console.log({token})
-    // More here:https://dev.to/ahsan131hub/react-native-fire-base-push-notification-using-topics-2fnf
-  }
+  // Push notifications: Register background handler
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  }); 
 
   useEffect(() => {
     SplashScreen.hide()
     
+    // START - Push notification testing
     if(Platform.OS === 'android')
-    { 
-        
+     { 
         console.log("Requesting noti perm for android")
         PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-        getFCMToken()
-       
+        getFCMToken()               
     }
 
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
 
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      //Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
     return unsubscribe;
+    // END - Push notification testing
   }, []);
 
   // Set init UserCredentials, basically no one is logged in.
@@ -58,7 +58,7 @@ const App = () => {
   // Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
     setLoggedInUser(loggedInUser);
-    console.log({loggedInUser})
+    //console.log({loggedInUser})
     if(loggedInUser){
       setUserCreds({
         uid: loggedInUser.uid,

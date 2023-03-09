@@ -14,6 +14,7 @@ import { Loading, SubHeader, BasicList, ChatMsgListItem, BasicButton, IconButton
 import { UserContext } from "../context/auth.context";
 import { addChatMessage, ChatMessages, getMoreChatMessages, updateChatroom } from "../services/firebase/database.service";
 import { uploadImageFile } from "../services/firebase/storage.service";
+import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -141,6 +142,9 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             setMsgSendButtonLoading(false)
         });
 
+        // Handle send of notifications and subs
+        handleNoti(chatMsg)
+
         setChatMsg('')
 
         // When chat msg sendt, then refocus on textinput field for further and faster writing.
@@ -258,6 +262,21 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
             {text: 'Camera', onPress: pickImageFromCamera},
             {text: 'Cancel', onPress: () => setCameraButtonLoading(false), style: 'cancel'},
         ]);
+    }
+
+    const handleNoti = (msg: string) => {
+
+        // Send push notification for all users that are subs to this chatroom
+        sendNotiMessage(roomId, msg, roomName);
+
+        Alert.alert('Push notifications', 'Send me push notifications when new message is added?', [
+            {text: 'Yes', onPress: () => {
+                // Subscribe to this chatroom
+                subscribeTopic(roomId);
+            }},
+            {text: 'No'},
+        ]);
+      
     }
 
     return(
