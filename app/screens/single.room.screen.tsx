@@ -201,6 +201,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                     console.log('Chat message added!');
                     // Update the chatroom new_msg_date field with new timestamp
                     updateChatroom(roomId)
+
+                    // Handle send of notifications and subs
+                    handleNoti('Image')
+
                     setCameraButtonLoading(false)
                 })
                 .catch((error) => {
@@ -248,6 +252,10 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                    console.log('Chat message added!');
                    // Update the chatroom new_msg_date field with new timestamp
                    updateChatroom(roomId)
+
+                    // Handle send of notifications and subs
+                    handleNoti('Image')
+
                    setCameraButtonLoading(false)
                })
                .catch((error) => {
@@ -279,7 +287,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     const handleNoti = (msg: string) => {
 
         // Send push notification for all users that are subs to this chatroom
-        sendNotiMessage(roomId, msg, roomName);
+        sendNotiMessage(roomId, msg, roomName, roomId);
 
         getUserNotiSubs(userCred.uid, roomId).then((response) => {
             console.log("User was subd:",response)

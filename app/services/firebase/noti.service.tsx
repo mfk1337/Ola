@@ -34,7 +34,7 @@ export const getFCMToken = async () =>{
 }
 
 // Sending push notifications via FCM
-export const sendNotiMessage = async (topic: string, msg: string, chatroom: string) => {
+export const sendNotiMessage = async (topic: string, msg: string, chatroom: string, chatroom_id: string) => {
 
     fetch('https://fcm.googleapis.com/fcm/send', {
         method: 'POST',
@@ -44,6 +44,9 @@ export const sendNotiMessage = async (topic: string, msg: string, chatroom: stri
         },
         body: JSON.stringify({          
         "to": "/topics/"+topic,
+        "data": {
+          "link":"olachat://room/"+chatroom_id
+        },
         "notification": {
             "title": "New chat message in "+chatroom,
             "body": msg
@@ -51,13 +54,13 @@ export const sendNotiMessage = async (topic: string, msg: string, chatroom: stri
         }),
 
       }).then(response => {
-            console.log("sendNotiMessage response: ",response);
+            //console.log("sendNotiMessage response: ",response);
       })
       .then(json => {
-            console.log("sendNotiMessage json: ",json);
+            //console.log("sendNotiMessage json: ",json);
       })
       .catch(error => {
-            console.log("sendNotiMessage error: ",error);
+            //console.log("sendNotiMessage error: ",error);
       });;
 
 }

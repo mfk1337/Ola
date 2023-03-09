@@ -11,10 +11,10 @@ import SplashScreen from 'react-native-splash-screen'
 import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 import auth from '@react-native-firebase/auth';
 import { UserContext, UserCredentials } from './context/auth.context';
-import { Alert, PermissionsAndroid, Platform } from 'react-native';
+import { PermissionsAndroid, Platform, Linking } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
-import { getFCMToken, sendNotiMessage, subscribeTopic } from './services/firebase/noti.service';
+import { getFCMToken } from './services/firebase/noti.service';
 
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +26,7 @@ const App = () => {
     console.log('Message handled in the background!', remoteMessage);
   }); 
 
+
   useEffect(() => {
     SplashScreen.hide()
     
@@ -34,12 +35,29 @@ const App = () => {
      { 
         console.log("Requesting noti perm for android")
         PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-        getFCMToken()               
-    }
+        getFCMToken()
+        
 
+    }
+    
+    // Push notifications: Handle noti from background state
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log("onNotificationOpenedApp - Deep link from noti:", remoteMessage.data?.link);
+      Linking.openURL(remoteMessage.data?.link as string)
+    });
+
+    // Push notifications: Handle noti from quite state
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log("getInitialNotification - Deep link from noti:", remoteMessage.data?.link);
+          Linking.openURL(remoteMessage.data?.link as string)
+        }
+    });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      //Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
     // END - Push notification testing
