@@ -290,25 +290,30 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         // Send push notification for all users that are subs to this chatroom
         sendNotiMessage(roomId, msg, roomName, roomId);
 
-        console.log(getDataSeenPushNotiPopup())
-
-        getUserNotiSubs(userCred.uid, roomId).then((response) => {
-            console.log("User was subd:",response)
-
-            if(!response)
+        getDataSeenPushNotiPopup(roomId).then((response)=>{
+            if(response!==roomId)
             {
-                Alert.alert('Push notifications', 'Send me push notifications when new message is added?', [
-                    {text: 'Yes', onPress: () => {
-                        // Subscribe to this chatroom FCM
-                        subscribeTopic(roomId);
-                        // Add sub to database
-                        subUserToNoti(userCred.uid, roomId);
-                    }},
-                    {text: 'No', onPress: () => storeDataSeenPushNotiPopup(roomId)},
-                ]);
+                getUserNotiSubs(userCred.uid, roomId).then((response) => {
+                    console.log("User was subd:",response)
+        
+                    if(!response)
+                    {
+                        Alert.alert('Push notifications', 'Send me push notifications when new message is added?', [
+                            {text: 'Yes', onPress: () => {
+                                // Subscribe to this chatroom FCM
+                                subscribeTopic(roomId);
+                                // Add sub to database
+                                subUserToNoti(userCred.uid, roomId);
+                            }},
+                            {text: 'No', onPress: () => storeDataSeenPushNotiPopup(roomId)},
+                        ]);
+                    }
+        
+                }); 
             }
+        })
 
-        });       
+              
       
     }
 
