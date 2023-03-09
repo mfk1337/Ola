@@ -15,6 +15,7 @@ import { UserContext } from "../context/auth.context";
 import { addChatMessage, ChatMessages, getMoreChatMessages, getRoomInfo, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
 import { uploadImageFile } from "../services/firebase/storage.service";
 import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
+import { getDataSeenPushNotiPopup, storeDataSeenPushNotiPopup } from "../libs/async.storage";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -289,6 +290,8 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         // Send push notification for all users that are subs to this chatroom
         sendNotiMessage(roomId, msg, roomName, roomId);
 
+        console.log(getDataSeenPushNotiPopup())
+
         getUserNotiSubs(userCred.uid, roomId).then((response) => {
             console.log("User was subd:",response)
 
@@ -301,7 +304,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         // Add sub to database
                         subUserToNoti(userCred.uid, roomId);
                     }},
-                    {text: 'No'},
+                    {text: 'No', onPress: () => storeDataSeenPushNotiPopup(roomId)},
                 ]);
             }
 
