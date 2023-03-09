@@ -12,7 +12,7 @@ import { sharedStyles, Colors } from "../assets/styles";
 import { Loading, SubHeader, BasicList, ChatMsgListItem, BasicButton, IconButton, CustomNav } from "../components";
 
 import { UserContext } from "../context/auth.context";
-import { addChatMessage, ChatMessages, getMoreChatMessages, updateChatroom } from "../services/firebase/database.service";
+import { addChatMessage, ChatMessages, getMoreChatMessages, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
 import { uploadImageFile } from "../services/firebase/storage.service";
 import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
 
@@ -269,13 +269,23 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         // Send push notification for all users that are subs to this chatroom
         sendNotiMessage(roomId, msg, roomName);
 
-        Alert.alert('Push notifications', 'Send me push notifications when new message is added?', [
-            {text: 'Yes', onPress: () => {
-                // Subscribe to this chatroom
-                subscribeTopic(roomId);
-            }},
-            {text: 'No'},
-        ]);
+        getUserNotiSubs(userCred.uid, roomId).then((response) => {
+            console.log("User was subd:",response)
+
+            if(!response)
+            {
+                Alert.alert('Push notifications', 'Send me push notifications when new message is added?', [
+                    {text: 'Yes', onPress: () => {
+                        // Subscribe to this chatroom FCM
+                        subscribeTopic(roomId);
+                        // Add sub to database
+                        subUserToNoti(userCred.uid, roomId);
+                    }},
+                    {text: 'No'},
+                ]);
+            }
+
+        });       
       
     }
 

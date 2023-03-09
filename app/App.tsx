@@ -80,9 +80,13 @@ const App = () => {
 
   if (initializing) return null;
 
+  const linking = {
+    prefixes: ['olachat://']
+  };
+
   return(
     <UserContext.Provider value={userCred}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking} >
           {
             !loggedInUser ? (
               // User is not logged in, show login screen

@@ -5,6 +5,7 @@
 */
 import messaging from '@react-native-firebase/messaging';
 
+// Request permission to receive notifications
 export const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -15,6 +16,7 @@ export const requestUserPermission = async () => {
     }
 }
 
+// Subscribe to topic, in this case chatrooms.
 export const subscribeTopic = async (topic: string) => {
     messaging()
       .subscribeToTopic(topic)
@@ -24,12 +26,14 @@ export const subscribeTopic = async (topic: string) => {
       });
 }
 
+// Get Firebase Cloud Messaging token, for testing
 export const getFCMToken = async () =>{
     await messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
     console.log({token})
 }
 
+// Sending push notifications via FCM
 export const sendNotiMessage = async (topic: string, msg: string, chatroom: string) => {
 
     fetch('https://fcm.googleapis.com/fcm/send', {
