@@ -208,3 +208,86 @@ export const addChatMessage = async (roomId: string, chatMsg: string, userCred: 
      
 }
 
+/**
+ * Function name: getUserNotiSubs
+ * Function desc: Check if the user is subscribed to a chatroom
+ * @param user_id 
+ * @param chatroom_id 
+ * @returns boolean
+ */
+export const getUserNotiSubs = async (user_id: string, chatroom_id: string): Promise<boolean> => {
+
+    var userSubscribed = false
+    await firestore()
+    .collection('notisubs')
+    .where("user_id","==",user_id)
+    .where("chatroom_id","==",chatroom_id)
+    .get()
+    .then(querySnapshot => {
+        if(querySnapshot.size > 0)
+        {
+            userSubscribed = true
+        }
+    });
+
+    return Promise.resolve(userSubscribed);
+
+}
+
+/**
+ * Function name: subUserToNoti
+ * Function desc: Subscribe the user to the chatroom, database only. FCM topic subs is handled in noti.services (subscribeTopic)
+ * @param user_id 
+ * @param chatroom_id 
+ */
+export const subUserToNoti = async (user_id: string, chatroom_id: string) => {
+
+    try {
+        await firestore()
+        .collection('notisubs')
+        .add({
+            user_id: user_id,
+            chatroom_id: chatroom_id,
+        })
+        .then(() => {
+            console.log('subUserToNoti: Chatroom sub was added!');
+        })
+        .catch((error) => {
+            console.log("subUserToNoti: Firestore database add sub error:",error);
+        });
+                
+    } catch (err) {
+        // If any error in firebase connection, throw error.
+        throw err;
+    }
+
+}
+/**
+ * Function name: getRoomInfo
+ * Function desc: Get room name and desc
+ * @param roomId 
+ * @returns 
+ */
+export const getRoomInfo = async (roomId: string) => {
+    try {
+       
+        var roomName = ''
+        var roomDesc = ''
+        await firestore()
+        .collection('chatrooms')
+        .doc(roomId)
+        .get()
+        .then(documentSnapshot => {
+            if(documentSnapshot.exists){
+                roomName = documentSnapshot.get('name');
+                roomDesc = documentSnapshot.get('desc');
+            }
+        });
+
+        return Promise.resolve({name: roomName, desc: roomDesc});
+                
+    } catch (err) {
+        // If any error in firebase connection, throw error.
+        throw err;
+    }
+}

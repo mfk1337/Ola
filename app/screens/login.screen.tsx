@@ -149,7 +149,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
         if(response=="logged-in")
         {
           setLoading(false)
-          navigation.navigate('Rooms')
+          //navigation.navigate('Rooms')
         }
 
         // Handle error messages and show to user
@@ -186,6 +186,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
     <SafeAreaView style={sharedStyles.container}>
                 
       <View style={styles.loginItemsContainer}>
+        
         <Image source={require('../assets/img/app_logo.png')} style={styles.appLogo}/>
         <TextInput
                 style={sharedStyles.textInput}
@@ -218,7 +219,7 @@ export const LoginScreen = ({navigation}: {navigation: any}) => {
                 placeholderTextColor={Colors.medGrey}
                 onSubmitEditing={handleSignIn}
             />
-        <BasicButton title="Login" onPress={handleSignIn} />        
+        <BasicButton title="Login" onPress={handleSignIn} /> 
           
         <BasicButton title="Sign in with Facebook" onPress={handleSignInWithFacebook} style={{marginTop:10}}/>
 
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
     },
     loginItemsContainer: {
       marginHorizontal: 60,
-      marginTop: 90, 
+      marginTop: 60, 
     }
     
 });

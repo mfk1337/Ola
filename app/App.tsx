@@ -11,14 +11,57 @@ import SplashScreen from 'react-native-splash-screen'
 import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 import auth from '@react-native-firebase/auth';
 import { UserContext, UserCredentials } from './context/auth.context';
+import { PermissionsAndroid, Platform, Linking } from 'react-native';
+
+import messaging from '@react-native-firebase/messaging';
+import { getFCMToken } from './services/firebase/noti.service';
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
 
+  // Push notifications: Register background handler
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  }); 
+
+
   useEffect(() => {
     SplashScreen.hide()
-  });
+    
+    // START - Push notification testing
+    if(Platform.OS === 'android')
+     { 
+        console.log("Requesting noti perm for android")
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        getFCMToken()
+        
+
+    }
+    
+    // Push notifications: Handle noti from background state
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log("onNotificationOpenedApp - Deep link from noti:", remoteMessage.data?.link);
+      Linking.openURL(remoteMessage.data?.link as string)
+    });
+
+    // Push notifications: Handle noti from quite state
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log("getInitialNotification - Deep link from noti:", remoteMessage.data?.link);
+          Linking.openURL(remoteMessage.data?.link as string)
+        }
+    });
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+    // END - Push notification testing
+  }, []);
 
   // Set init UserCredentials, basically no one is logged in.
   const [userCred, setUserCreds] = useState<UserCredentials>({
@@ -33,7 +76,7 @@ const App = () => {
   // Handle user state changes
   const onAuthStateChanged = (loggedInUser: any) => {
     setLoggedInUser(loggedInUser);
-    console.log({loggedInUser})
+    //console.log({loggedInUser})
     if(loggedInUser){
       setUserCreds({
         uid: loggedInUser.uid,
@@ -55,9 +98,23 @@ const App = () => {
 
   if (initializing) return null;
 
+  // Deep linking config
+  const config = {
+    screens: {
+      Rooms: 'rooms',
+      SingleRoom: 'room/:roomId',
+    },
+  };
+  
+  // Deep linking
+  const linking = {
+    prefixes: ['olachat://'],
+    config,
+  };
+
   return(
     <UserContext.Provider value={userCred}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking} >
           {
             !loggedInUser ? (
               // User is not logged in, show login screen
