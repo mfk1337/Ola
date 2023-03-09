@@ -262,3 +262,32 @@ export const subUserToNoti = async (user_id: string, chatroom_id: string) => {
     }
 
 }
+/**
+ * Function name: getRoomInfo
+ * Function desc: Get room name and desc
+ * @param roomId 
+ * @returns 
+ */
+export const getRoomInfo = async (roomId: string) => {
+    try {
+       
+        var roomName = ''
+        var roomDesc = ''
+        await firestore()
+        .collection('chatrooms')
+        .doc(roomId)
+        .get()
+        .then(documentSnapshot => {
+            if(documentSnapshot.exists){
+                roomName = documentSnapshot.get('name');
+                roomDesc = documentSnapshot.get('desc');
+            }
+        });
+
+        return Promise.resolve({name: roomName, desc: roomDesc});
+                
+    } catch (err) {
+        // If any error in firebase connection, throw error.
+        throw err;
+    }
+}

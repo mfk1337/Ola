@@ -12,7 +12,7 @@ import { sharedStyles, Colors } from "../assets/styles";
 import { Loading, SubHeader, BasicList, ChatMsgListItem, BasicButton, IconButton, CustomNav } from "../components";
 
 import { UserContext } from "../context/auth.context";
-import { addChatMessage, ChatMessages, getMoreChatMessages, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
+import { addChatMessage, ChatMessages, getMoreChatMessages, getRoomInfo, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
 import { uploadImageFile } from "../services/firebase/storage.service";
 import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
 
@@ -21,7 +21,11 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
     // Get user credentials from auth context.
     const userCred = useContext(UserContext);    
     // Params received from chatroom list, data specific for this room.
-    const { roomName, roomDesc, roomId } = route.params;   
+    const { roomId } = route.params;
+    
+    const [roomName, setRoomName] = useState('');
+    const [roomDesc, setRoomDesc] = useState('');
+
     // Initial message
     const [emptyErrMsg, setEmptyErrMsg] = useState("Loading messages...");     
     // State for loader overlay
@@ -44,8 +48,16 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
 
     useEffect(() => {        
         
-        // START - Firestore active listener to check for changes in chatmessages in the specific chatroom.
+        if(!roomName)
+        {
+            getRoomInfo(roomId).then((response)=>{
+                setRoomName(response.name)
+                setRoomDesc(response.desc)
+                console.log({response})
+            })
+        }
 
+        // START - Firestore active listener to check for changes in chatmessages in the specific chatroom.
         // Chatmessages query error when getting new chatmessages
         const onQueryError = (error: any) => {
             console.log("Firestore database get chat messages onQueryError:",error);

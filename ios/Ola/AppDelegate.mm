@@ -3,6 +3,7 @@
 #import <Firebase.h>
 #import <GoogleSignIn/GIDSignIn.h>
 #import <FBSDKCoreKit/FBSDKCoreKit-swift.h>
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -25,9 +26,15 @@
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-  return [[FBSDKApplicationDelegate sharedInstance]application:app
-                                                      openURL:url
-                                                      options:options];
+  if ([[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options]) {
+    return YES;
+  }
+
+  if ([RCTLinkingManager application:app openURL:url options:options]) {
+    return YES;
+  }
+
+  return NO;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

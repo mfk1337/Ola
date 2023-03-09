@@ -80,8 +80,18 @@ const App = () => {
 
   if (initializing) return null;
 
+  // Deep linking config
+  const config = {
+    screens: {
+      Rooms: 'rooms',
+      SingleRoom: 'room/:roomId',
+    },
+  };
+  
+  // Deep linking
   const linking = {
-    prefixes: ['olachat://']
+    prefixes: ['olachat://'],
+    config,
   };
 
   return(
