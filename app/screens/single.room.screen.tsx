@@ -52,10 +52,12 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
         
         if(!roomName)
         {
+            setLoading(true)
             getRoomInfo(roomId).then((response)=>{
                 setRoomName(response.name)
                 setRoomDesc(response.desc)
                 console.log({response})
+                setLoading(false)
             })
         }
 
