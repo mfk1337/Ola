@@ -11,7 +11,7 @@ import SplashScreen from 'react-native-splash-screen'
 import { LoginScreen, RoomsScreen, SingleRoomScreen, ImageFullsizeScreen } from './screens';
 import auth from '@react-native-firebase/auth';
 import { UserContext, UserCredentials } from './context/auth.context';
-import { PermissionsAndroid, Platform, Linking } from 'react-native';
+import { PermissionsAndroid, Platform, Linking, StatusBar } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { getFCMToken } from './services/firebase/noti.service';
@@ -20,6 +20,9 @@ import { getFCMToken } from './services/firebase/noti.service';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
+  // StatusBar is always darkmode
+  StatusBar.setBarStyle('dark-content', true);
 
   // Push notifications: Register background handler
   messaging().setBackgroundMessageHandler(async remoteMessage => {
