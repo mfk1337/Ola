@@ -11,6 +11,7 @@ import { sharedStyles, Colors } from "../assets/styles";
 import { BasicButton, Loading } from "../components";
 import { signInFirebaseEmailPassword, signInFirebaseFacebook, signInFirebaseGoogleSignin } from "../services/firebase/auth.service";
 import { formInputValidation } from "../libs/form-validation";
+import { isLightTheme } from "../libs/colorscheme";
 
 export const LoginScreen = ({navigation}: {navigation: any}) => {
 

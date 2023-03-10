@@ -3,6 +3,7 @@
  */
 
 import { StyleSheet } from 'react-native';
+import { isLightTheme } from '../../libs/colorscheme';
 import { Colors } from './colors';
 import { fontStyles } from './fonts';
 
@@ -13,12 +14,13 @@ export const sharedStyles = StyleSheet.create({
     },      
     textInput: {
         borderWidth: 1,
-        borderColor: Colors.white,
+        borderColor: isLightTheme() ? Colors.white : Colors.darkestGrey,
         padding: 12,
         borderRadius: 10,
         marginTop: 10,
         fontSize: 17,
-        backgroundColor: Colors.white
+        backgroundColor: isLightTheme() ? Colors.white : Colors.darkestGrey,
+        color: isLightTheme() ? Colors.black : Colors.lightGrey,
     },
     
     errorMsgGrey: {

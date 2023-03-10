@@ -16,6 +16,7 @@ import { addChatMessage, ChatMessages, getMoreChatMessages, getRoomInfo, getUser
 import { uploadImageFile } from "../services/firebase/storage.service";
 import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
 import { getDataSeenPushNotiPopup, storeDataSeenPushNotiPopup } from "../libs/async.storage";
+import { isLightTheme } from "../libs/colorscheme";
 
 export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
     basicListStyle: {
         flex: 1,
         marginTop:0,
-        backgroundColor: Colors.white
+        backgroundColor: isLightTheme() ? Colors.white : Colors.darkestGrey
     },
     sendButton: {
         marginRight:10,

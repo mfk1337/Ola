@@ -7,6 +7,7 @@ import React from 'react';
 import { Text, View, TouchableHighlight, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { fontStyles, Colors } from '../../assets/styles';
+import { isLightTheme } from '../../libs/colorscheme';
 
 
 interface BasicListItemProps {
@@ -27,7 +28,7 @@ export const BasicListItem: React.FC<BasicListItemProps> = props => {
                     <Text style={styles.listItemDesc}>{item.desc}</Text>            
                 </View>
                 <View style={styles.listItemArrowContainer}>
-                    <Icon size={34} color="white" name="chevron-forward" />
+                    <Icon size={34} color={isLightTheme() ? "white" : Colors.darkestGrey} name="chevron-forward" />
                 </View>                
             </View>
         </TouchableHighlight>
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
    
     listItemContainer: {
         flexDirection: 'row',
-        backgroundColor: Colors.lightGreen        
+        backgroundColor: isLightTheme() ? Colors.lightGreen : Colors.darkGrey,  
     },
     listItemContainerChild: {
         flexDirection: 'column',
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingBottom: 2,
         textAlign:'left',
-        color: Colors.black,
+        color: isLightTheme() ? Colors.black : Colors.green,
         fontSize: 17,
         margin:0,
         ...fontStyles.fontRoboto
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingTop: 2,
         textAlign:'left',
-        color: Colors.black,
+        color: isLightTheme() ? Colors.black : Colors.darkestGrey,
         fontSize: 12,
         margin:0,...fontStyles.fontRoboto
     },

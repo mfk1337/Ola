@@ -8,6 +8,7 @@ import React from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import { fontStyles, Colors} from '../../assets/styles';
 import Moment from 'moment';
+import { isLightTheme } from '../../libs/colorscheme';
 
 interface ChatMsgListItemProps {
     item: any;
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     chatBubbleGreenText: {
         padding: 10,
         textAlign:'left',
-        color: Colors.black,
+        color: isLightTheme() ? Colors.black : Colors.darkestGrey,
         fontSize: 13,
         margin:0,...fontStyles.fontRoboto
     },
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
 
     // Other user, left chat bubble styles
     chatBubbleGray: {
-        backgroundColor: Colors.lightGrey,
+        backgroundColor: isLightTheme() ? Colors.lightGrey : Colors.darkGrey,
         overflow:'hidden',
         marginLeft:10,
         marginRight:10,
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     chatBubbleGrayText: {
         padding: 10,
         textAlign:'left',
-        color: Colors.black,
+        color: isLightTheme() ? Colors.black : Colors.white,
         fontSize: 13,
         margin:0,...fontStyles.fontRoboto
     },

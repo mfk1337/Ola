@@ -12,6 +12,7 @@ import { Loading, BasicList, BasicListItem, CustomNav, NoFrameButton } from "../
 import { UserContext } from "../context/auth.context";
 import { getChatRoomList, ChatRooms } from "../services/firebase/database.service";
 import { signOutFirebase } from "../services/firebase/auth.service";
+import { isLightTheme } from "../libs/colorscheme";
 
 export const RoomsScreen = ({route,navigation}: {route: any,navigation: any}) => {
 
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     basicListStyle: {
         flex: 1,
         marginTop:0,
-        backgroundColor: Colors.white
+        backgroundColor: isLightTheme() ? Colors.white : Colors.darkestGrey
     },
 });

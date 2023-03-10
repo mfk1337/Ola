@@ -6,6 +6,7 @@
 import React from "react";
 import { StyleProp, StyleSheet, Text, View } from "react-native";
 import { Colors, fontStyles } from "../assets/styles";
+import { isLightTheme } from "../libs/colorscheme";
 
 interface HeaderProps {
     style?: StyleProp<any>;
@@ -53,14 +54,14 @@ const styles = StyleSheet.create({
     },
 
     subHeaderContainer: {
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: isLightTheme() ? Colors.lightGreen : Colors.darkGrey,
     },
 
     subHeaderText: {
         textAlign: "center",
         fontSize:13,
         ...fontStyles.fontRoboto,
-        color: Colors.black,
+        color: isLightTheme() ? Colors.black : Colors.green,
         padding:10,
         paddingRight:10,
     },
