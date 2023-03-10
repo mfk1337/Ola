@@ -5,6 +5,7 @@
 */
 
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import { UserCredentials } from '../../context/auth.context';
 
 export interface ChatRooms {
@@ -290,4 +291,48 @@ export const getRoomInfo = async (roomId: string) => {
         // If any error in firebase connection, throw error.
         throw err;
     }
+}
+/**
+ * Function name: deleteChatMsg
+ * Function desc: A user can delete there own messages. If there is a image, the image is deleted from Firebase storage also.
+ * @param msgId 
+ * @param loggedInUserId 
+ * @param chatmsgSenderId 
+ * @param imageUrl 
+ */
+export const deleteChatMsg = async (msgId: string, loggedInUserId: string, chatmsgSenderId: string, imageUrl?: string) => {
+
+    try {
+        
+        // Minor security check, check if sender_id field is same as logged in user id.
+        if(loggedInUserId!=chatmsgSenderId) return
+
+        // Deletes message(Document) from chatmessages(Collection)
+        await firestore()
+        .collection('chatmessages')
+        .doc(msgId)
+        .delete()
+        .then(() => {
+          console.log('Message deleted!');
+
+          // If there is a image, delete it from Firebase storage
+          if(imageUrl)
+          {
+              let imageRef = storage().refFromURL(imageUrl as string);
+              imageRef
+                .delete()
+                .then(() => {
+                    console.log('Image has been deleted successfully.');
+                })
+                .catch((e) => console.log('error on image deletion => ', e));
+          }
+
+        });
+
+                
+    } catch (err) {
+        // If any error in firebase connection, throw error.
+        throw err;
+    }
+
 }

@@ -12,7 +12,7 @@ import { sharedStyles, Colors } from "../assets/styles";
 import { Loading, SubHeader, BasicList, ChatMsgListItem, BasicButton, IconButton, CustomNav } from "../components";
 
 import { UserContext } from "../context/auth.context";
-import { addChatMessage, ChatMessages, getMoreChatMessages, getRoomInfo, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
+import { addChatMessage, ChatMessages, deleteChatMsg, getMoreChatMessages, getRoomInfo, getUserNotiSubs, subUserToNoti, updateChatroom } from "../services/firebase/database.service";
 import { uploadImageFile } from "../services/firebase/storage.service";
 import { sendNotiMessage, subscribeTopic } from "../services/firebase/noti.service";
 import { getDataSeenPushNotiPopup, storeDataSeenPushNotiPopup } from "../libs/async.storage";
@@ -320,6 +320,18 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
       
     }
 
+    // Hande long press for deletion of message. A user can only delete there own messages.
+    const handleLongPress = (msgId: string, senderId: string, msgImageUrl?: string) => {
+              
+        Alert.alert('Delete message?', 'This will delete the message for you and others.', [
+            {text: 'Yes', onPress: () => {
+                deleteChatMsg(msgId, userCred.uid, senderId, msgImageUrl)
+            }},
+            {text: 'Cancel'},
+        ]);
+        
+    }
+
     return(
         <SafeAreaView style={[sharedStyles.container]}>
 
@@ -358,6 +370,7 @@ export const SingleRoomScreen = ({route,navigation}: {route: any,navigation: any
                         <ChatMsgListItem 
                             item={item.data} 
                             currentUser={item.data.sender_id == userCred.uid ? true : false}
+                            onLongPress={()=>handleLongPress(item.key, item.data.sender_id, item.data.msg_image_url)}
                             imageOnPress={()=>{
                                 navigation.navigate('ImageFullsize', {
                                     image_url: item.data.msg_image_url,

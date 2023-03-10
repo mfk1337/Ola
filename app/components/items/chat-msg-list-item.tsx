@@ -15,12 +15,13 @@ interface ChatMsgListItemProps {
     item: any;
     currentUser: boolean;
     onPress?: () => void;
+    onLongPress?: () => void;
     imageOnPress?: () => void;
 }
 
 export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
 
-    const { item, currentUser, onPress, imageOnPress } = props;
+    const { item, currentUser, onPress, imageOnPress, onLongPress } = props;
 
     const defaultAvatar = '../../assets/img/default-avatar.jpg';
     const defaultNoName = 'NoName';
@@ -39,13 +40,13 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
             
 
             {currentUser ? (
-                <View style={{alignItems: 'flex-end'}}>
+                <TouchableOpacity style={{alignItems: 'flex-end'}} onLongPress={onLongPress}>
                     <View style={{flexDirection: 'row'}}>
                         <View style={styles.chatBubbleGreen}>                              
                                 {
                                     // If message is of type image and image url is present, then show image in chat bubble.
                                     item.msg_image_url ? (
-                                        <TouchableOpacity onPress={imageOnPress}>
+                                        <TouchableOpacity onPress={imageOnPress} onLongPress={onLongPress}>
                                         <FastImage style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
                                         </TouchableOpacity>
                                     ):( // Show normal chat bubble if no image
@@ -61,7 +62,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
 
                     {/* Chat message stamp: User name, chatmsg time/date */}
                     <Text style={styles.chatBubbleGreenSmallTxt}>{item.sender_name ? item.sender_name : defaultNoName} - {msgDateTime}</Text>          
-                </View>
+                </TouchableOpacity>
             ):(
                 <View style={{alignItems: 'flex-start'}}>
                      <View style={{flexDirection: 'row'}}>
