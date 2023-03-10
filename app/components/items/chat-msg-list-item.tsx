@@ -8,6 +8,7 @@ import React from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import { fontStyles, Colors} from '../../assets/styles';
 import Moment from 'moment';
+import FastImage from 'react-native-fast-image'; // https://blog.logrocket.com/caching-images-react-native-tutorial-with-examples/
 import { isLightTheme } from '../../libs/colorscheme';
 
 interface ChatMsgListItemProps {
@@ -45,7 +46,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                                     // If message is of type image and image url is present, then show image in chat bubble.
                                     item.msg_image_url ? (
                                         <TouchableOpacity onPress={imageOnPress}>
-                                        <Image style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
+                                        <FastImage style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
                                         </TouchableOpacity>
                                     ):( // Show normal chat bubble if no image
                                         <Text style={styles.chatBubbleGreenText}>{item.msg_text}</Text>
@@ -54,7 +55,7 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                         </View> 
 
                         {/* User avatar image, if no image show default avatar */}
-                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGreenAvatar}/>   
+                        <FastImage source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGreenAvatar}/>   
 
                     </View>
 
@@ -66,14 +67,14 @@ export const ChatMsgListItem: React.FC<ChatMsgListItemProps> = props => {
                      <View style={{flexDirection: 'row'}}>
 
                         {/* User avatar image, if no image show default avatar */}
-                        <Image source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGrayAvatar}/>   
+                        <FastImage source={item.sender_avatar ? {uri: item.sender_avatar} : require(defaultAvatar)} style={styles.chatBubbleGrayAvatar}/>   
 
                         <View style={styles.chatBubbleGray}>                              
                                 {
                                     // If message is of type image and image url is present, then show image in chat bubble.
                                     item.msg_image_url ? (
                                         <TouchableOpacity onPress={imageOnPress}>
-                                        <Image style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
+                                        <FastImage style={styles.chatBubbleImage} source={{uri: item.msg_image_url}} />
                                         </TouchableOpacity>
                                     ):( // Show normal chat bubble if no image
                                         <Text style={styles.chatBubbleGrayText}>{item.msg_text}</Text>
