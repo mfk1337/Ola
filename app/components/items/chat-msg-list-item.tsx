@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import { fontStyles, Colors} from '../../assets/styles';
 import Moment from 'moment';
 import FastImage from 'react-native-fast-image'; // https://blog.logrocket.com/caching-images-react-native-tutorial-with-examples/
